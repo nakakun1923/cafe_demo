@@ -1,9 +1,43 @@
 # cafe&BAR Caprice
 
-Responsive static cafe demo site published with GitHub Pages.
+採用済み画像 `../design/cafe-design-v1.png` をもとにしたカフェのデモサイト。
+HTML / CSS / JavaScriptのみ。依存のインストールやビルドは不要です。
 
-- Main page: `index.html`
-- Menu page: `menu.html`
-- Store settings: `site-settings.js`
+## 起動
 
-The location and Instagram account are undecided. The map is a Japan-wide placeholder without a store pin, and Instagram is marked as coming soon. Menu items, prices, and photos are demo content and have not been verified as real store information.
+`npm run dev` → http://127.0.0.1:4173
+
+- トップ: `dist/index.html`
+- 独立メニューページ: `dist/menu.html`
+- 店舗情報とリンク設定: `dist/site-settings.js`
+- 動作: `dist/app.js`
+- 配布対象: `dist/` 全体
+
+## 機能
+
+- メイン写真3枚のフェード切替、前後操作、停止・開始。
+- フォーカス・ホバー・非表示タブ・画面外・ダイアログ表示中は自動切替を一時停止。
+- 季節のおすすめの前後切替と横スワイプ。
+- 写真6枚の横スクロールギャラリー、拡大、前後切替、左右キー、Escape、フォーカス復帰。
+- メニューページのカテゴリ絞り込み、商品詳細。
+- スクロール演出、モバイルナビゲーション、動きを減らす設定への対応。
+- Google マップの埋め込みとInstagram案内。問い合わせフォームなし。
+
+## 店舗情報
+
+店名はユーザー指定の **cafe&BAR Caprice**。所在地は **〒761-0613 香川県木田郡三木町上高岡２１７１** です。営業時間・Instagramアカウントは未設定です。
+Google マップは指定住所で表示します。Instagramは準備中と明示しています。
+`site-settings.js` に営業時間・Instagram URLを設定すると反映されます。
+写真・メニュー・説明文はデモ用。実際の提供内容・価格は未確認です。
+予約・注文・お問い合わせの送信機能はありません。
+
+## 写真と表示
+
+写真6枚は built-in image_gen で生成しJPEGへ変換。メイン・商品・ギャラリー写真は3:2を保持しています。
+スマートフォンのメインは文字と写真を分け、本文画像は `height: auto` で固定高さによる空白を防止します。
+Google Fontsを参照し、未取得時は端末フォントへ切り替わります。
+
+## 確認
+
+`npm run check` で構文確認。ブラウザ結果は `QA.md` を参照。
+ユーザーのGit操作制約に従いcommit/pushは実施せず、ローカルで起動しています。
