@@ -39,5 +39,5 @@ Google Fontsを参照し、未取得時は端末フォントへ切り替わり�
 
 ## 確認
 
-`npm run check` で構文確認。ブラウザ結果は `QA.md` を参照。
-ユーザーのGit操作制約に従いcommit/pushは実施せず、ローカルで起動しています。
+`npm run check` で構文確認。ローカルのブラウザ結果は `QA.md` を参照。
+公開先は [GitHub Pages](https://nakakun1923.github.io/cafe_demo/) です。
