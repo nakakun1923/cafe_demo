@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#30241e">
+  <title>メニュー | cafe&amp;BAR Caprice</title>
+  <meta name="description" content="cafe&BAR Capriceのメニュー。コーヒー、パン、季節のスイーツをご紹介するデモページです。">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%2330241e'/%3E%3Ctext x='20' y='29' text-anchor='middle' fill='%23f8f4eb' font-family='Georgia' font-size='29'%3EC%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css"><script src="site-settings.js" defer></script><script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へスキップ</a>
+  <header class="header"><a class="wordmark" href="index.html" aria-label="cafe&BAR Caprice トップ"><span>cafe &amp; BAR</span>Caprice</a><button class="nav-toggle" aria-expanded="false" aria-controls="navigation" aria-label="メニューを開く"><span></span><span></span></button><nav id="navigation" aria-label="メインナビゲーション"><a href="menu.html" aria-current="page">メニュー</a><a href="index.html#story">私たちのこと</a><a href="index.html#gallery">ギャラリー</a><a href="index.html#instagram">Instagram</a><a class="visit-link" href="index.html#visit">お店を見る <span aria-hidden="true">↗</span></a></nav></header>
+  <main id="main" class="menu-page">
+    <div class="menu-intro section-pad"><a class="breadcrumb" href="index.html">HOME</a><span class="breadcrumb-divider" aria-hidden="true">/</span><span class="breadcrumb">MENU</span><p class="eyebrow">A CUP, A BITE, A LITTLE BREAK.</p><h1>MENU</h1><h2>今日は、何にしよう。</h2><p>香ばしいコーヒーとパン。<wbr>そして、少し甘いひと休み。</p></div>
+    <section class="menu-catalog section-pad" aria-label="メニュー一覧">
+      <div class="menu-filters" role="group" aria-label="メニューの種類"><button data-category="all" aria-pressed="true">すべて</button><button data-category="coffee" aria-pressed="false">コーヒー</button><button data-category="bakery" aria-pressed="false">パン</button><button data-category="sweets" aria-pressed="false">スイーツ</button></div>
+      <p class="catalog-count" id="catalog-count" aria-live="polite">4品のメニュー</p>
+      <div class="catalog-grid">
+        <article class="catalog-item" data-product-category="coffee"><button data-detail="coffee"><img src="assets/coffee.jpg" alt="陶器のカップに注がれたコーヒー" width="1536" height="1024"><span class="eyebrow">COFFEE</span><h2>いつものブレンド</h2><p>香ばしく、すっきりとしたあと味。</p><span class="catalog-detail">詳しく見る <span aria-hidden="true">＋</span></span></button></article>
+        <article class="catalog-item" data-product-category="bakery"><button data-detail="bakery"><img src="assets/hero.jpg" alt="クロワッサンとコーヒー" width="1536" height="1024"><span class="eyebrow">BAKERY</span><h2>バタークロワッサン</h2><p>さくさくの層に、バターの香り。</p><span class="catalog-detail">詳しく見る <span aria-hidden="true">＋</span></span></button></article>
+        <article class="catalog-item" data-product-category="sweets"><button data-detail="cheesecake"><img src="assets/cheesecake.jpg" alt="ベイクドチーズケーキ" width="1536" height="1024" loading="lazy"><span class="eyebrow">SWEETS</span><h2>ベイクドチーズケーキ</h2><p>しっとり濃厚、ほどよい甘さ。</p><span class="catalog-detail">詳しく見る <span aria-hidden="true">＋</span></span></button></article>
+        <article class="catalog-item" data-product-category="sweets"><button data-detail="seasonal"><img src="assets/seasonal.jpg" alt="栗のモンブランとカフェラテ" width="1536" height="1024" loading="lazy"><span class="eyebrow">AUTUMN SPECIAL</span><h2>栗のモンブラン</h2><p>秋のひと休みに、栗のやさしい甘さを。</p><span class="catalog-detail">詳しく見る <span aria-hidden="true">＋</span></span></button></article>
+      </div>
+      <p class="catalog-note">掲載メニュー・写真はデモ用のイメージです。実際の提供内容・価格は準備中です。</p>
+    </section>
+    <section class="menu-return"><p>お気に入りのひと皿を、<wbr>いつもの一杯と。</p><a class="text-link" href="index.html#gallery">カフェの雰囲気を見る <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer><a class="wordmark" href="index.html"><span>cafe &amp; BAR</span>Caprice</a><p>自主制作・デモサイト</p><span>掲載メニュー・写真はデモ用のイメージです。</span><a class="back-top" href="#" aria-label="ページの先頭へ">↑</a></footer>
+  <dialog id="detail-dialog" aria-labelledby="dialog-title"><button class="dialog-close circle" aria-label="閉じる" autofocus>×</button><div id="dialog-content"></div></dialog>
+</body>
+</html>

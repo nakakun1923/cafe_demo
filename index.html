@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#30241e">
+  <title>cafe&BAR Caprice — 焼きたてと、ひと息。</title>
+  <meta name="description" content="パンの香りと、いつもの一杯。焼きたてのパンとコーヒーを楽しむ、cafe&BAR Capriceのデモサイトです。">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%2330241e'/%3E%3Cpath d='M9 13h19v12a7 7 0 0 1-7 7h-5a7 7 0 0 1-7-7zm19 2h3a5 5 0 0 1 0 10h-3' fill='none' stroke='%23f8f4eb' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" as="image" href="assets/hero.jpg" fetchpriority="high">
+  <script src="site-settings.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へスキップ</a>
+  <header class="header">
+    <a class="wordmark" href="#" aria-label="cafe&BAR Caprice トップ"><span>cafe &amp; BAR</span>Caprice</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="navigation" aria-label="メニューを開く"><span></span><span></span></button>
+    <nav id="navigation" aria-label="メインナビゲーション">
+      <a href="menu.html">メニュー</a><a href="#story">私たちのこと</a><a href="#gallery">ギャラリー</a><a href="#instagram">Instagram</a><a class="visit-link" href="#visit">お店を見る <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero" aria-label="カフェのおすすめ" aria-roledescription="カルーセル">
+      <div class="hero-images" aria-hidden="true">
+        <img class="hero-image active" src="assets/hero.jpg" alt="" width="1536" height="1024" fetchpriority="high">
+        <img class="hero-image" src="assets/seasonal.jpg" alt="" width="1536" height="1024">
+        <img class="hero-image" src="assets/story.jpg" alt="" width="1536" height="1024">
+      </div>
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">BAKERY &amp; COFFEE</p>
+        <h1>焼きたてと、<br>ひと息。</h1>
+        <p class="hero-description">パンの香りと、いつもの一杯。</p>
+        <a class="text-link light" href="menu.html">メニューを見る <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="hero-controls">
+        <div class="hero-state"><span id="hero-count">01 <span class="muted">/ 03</span></span><span class="progress-track"><span id="hero-progress"></span></span><button id="hero-pause" class="icon-button" aria-label="スライドの自動再生を停止"><span aria-hidden="true">Ⅱ</span></button></div>
+        <span class="scroll-hint">SCROLL <span aria-hidden="true">↓</span></span>
+        <div class="arrows"><button class="circle light" id="hero-prev" aria-label="前の写真">‹</button><button class="circle light" id="hero-next" aria-label="次の写真">›</button></div>
+      </div>
+      <span class="sr-only" id="hero-status" aria-live="polite"></span>
+    </section>
+
+    <section class="pickup section-pad" id="pickup" aria-labelledby="pickup-heading">
+      <div class="section-heading reveal"><h2 id="pickup-heading">PICK UP</h2><p>季節のおすすめ</p></div>
+      <div class="pickup-visual reveal"><img id="pickup-image" src="assets/seasonal.jpg" alt="栗のモンブランとカフェラテ" width="1536" height="1024" loading="lazy"><span class="image-tag" id="pickup-tag">AUTUMN SPECIAL</span></div>
+      <div class="pickup-copy reveal">
+        <div id="pickup-text" aria-live="polite" aria-atomic="true"><p class="eyebrow" id="pickup-label">SEASONAL MENU</p><h3 id="pickup-title">秋のひと休みに。</h3><p id="pickup-description">栗の甘さに、<wbr>コーヒーの香りを添えて。</p></div>
+        <button class="text-link" id="pickup-detail" data-detail="seasonal">詳しく見る <span aria-hidden="true">↗</span></button>
+        <div class="pickup-controls"><button class="circle" id="pickup-prev" aria-label="前のおすすめ">‹</button><button class="circle" id="pickup-next" aria-label="次のおすすめ">›</button><span id="pickup-count" aria-label="3件中1件目">01 <span class="muted">— 03</span></span></div>
+      </div>
+    </section>
+
+    <section class="story" id="story" aria-labelledby="story-heading">
+      <div class="story-images reveal"><img class="baker-photo" src="assets/story.jpg" alt="焼き上がったクロワッサンをトレーに並べる手元" width="1536" height="1024" loading="lazy"><div class="story-inset"><img src="assets/coffee.jpg" alt="陶器のカップに注がれたコーヒー" width="1536" height="1024" loading="lazy"><span>A LITTLE MOMENT, EVERY DAY.</span></div></div>
+      <div class="story-copy reveal"><p class="eyebrow">OUR CAFE</p><h2 id="story-heading"><span>いつもの街に、</span><span>焼きたてのある場所。</span></h2><p>パンを選ぶ時間も、<wbr>コーヒーを待つ時間も。<br>ほっとできるひとときを、この場所で。</p><details class="story-more"><summary class="text-link">私たちのこと <span aria-hidden="true">＋</span></summary><p>さくっとしたひと口と、ふわりと広がるバターの香り。お気に入りのパンに、淹れたてのコーヒーを合わせて。ひとりで過ごす朝も、誰かと話したい午後も、気軽に立ち寄れるカフェをイメージしました。</p></details></div>
+    </section>
+
+    <section class="menu section-pad" id="menu" aria-labelledby="menu-heading">
+      <div class="section-heading inline reveal"><h2 id="menu-heading">MENU</h2><p>お気に入りを見つける</p></div>
+      <div class="menu-grid">
+        <button class="menu-item reveal" data-detail="coffee"><div class="menu-photo"><img src="assets/coffee.jpg" alt="陶器のカップに注がれたコーヒー" width="1536" height="1024" loading="lazy"><span aria-hidden="true">↗</span></div><h3>COFFEE</h3><p>コーヒー</p></button>
+        <button class="menu-item reveal" data-detail="bakery"><div class="menu-photo bakery-photo"><img src="assets/hero.jpg" alt="香ばしく焼き上げたクロワッサン" width="1536" height="1024" loading="lazy"><span aria-hidden="true">↗</span></div><h3>BAKERY</h3><p>パン</p></button>
+        <button class="menu-item reveal" data-detail="cheesecake"><div class="menu-photo"><img src="assets/cheesecake.jpg" alt="焼き色のついたチーズケーキ" width="1536" height="1024" loading="lazy"><span aria-hidden="true">↗</span></div><h3>SWEETS</h3><p>スイーツ</p></button>
+      </div>
+      <div class="menu-all"><a class="solid-button" href="menu.html">メニューをすべて見る <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+<section class="gallery section-pad" id="gallery" aria-labelledby="gallery-heading">
+      <div class="gallery-heading"><div class="section-heading inline"><h2 id="gallery-heading">GALLERY</h2><p>Capriceで過ごす時間</p></div><div class="arrows"><button class="circle" id="gallery-scroll-prev" aria-label="ギャラリーを左へ">‹</button><button class="circle" id="gallery-scroll-next" aria-label="ギャラリーを右へ">›</button></div></div>
+      <div class="gallery-track" id="gallery-track" aria-label="カフェの写真一覧" tabindex="0">
+        <button class="gallery-item" data-gallery="0" aria-label="窓辺で過ごす、ゆっくりした時間。 写真を拡大"><img src="assets/interior.jpg" alt="窓辺で過ごす、ゆっくりした時間。" width="1536" height="1024" loading="lazy"><span class="gallery-caption"><span>窓辺で過ごす、ゆっくりした時間。</span><span aria-hidden="true">＋</span></span></button><button class="gallery-item" data-gallery="1" aria-label="お気に入りの一杯と。 写真を拡大"><img src="assets/coffee.jpg" alt="お気に入りの一杯と。" width="1536" height="1024" loading="lazy"><span class="gallery-caption"><span>お気に入りの一杯と。</span><span aria-hidden="true">＋</span></span></button><button class="gallery-item" data-gallery="2" aria-label="焼きたての香りに包まれて。 写真を拡大"><img src="assets/hero.jpg" alt="焼きたての香りに包まれて。" width="1536" height="1024" loading="lazy"><span class="gallery-caption"><span>焼きたての香りに包まれて。</span><span aria-hidden="true">＋</span></span></button><button class="gallery-item" data-gallery="3" aria-label="午後に、甘いひと休み。 写真を拡大"><img src="assets/cheesecake.jpg" alt="午後に、甘いひと休み。" width="1536" height="1024" loading="lazy"><span class="gallery-caption"><span>午後に、甘いひと休み。</span><span aria-hidden="true">＋</span></span></button><button class="gallery-item" data-gallery="4" aria-label="ひとつずつ、丁寧に。 写真を拡大"><img src="assets/story.jpg" alt="ひとつずつ、丁寧に。" width="1536" height="1024" loading="lazy"><span class="gallery-caption"><span>ひとつずつ、丁寧に。</span><span aria-hidden="true">＋</span></span></button><button class="gallery-item" data-gallery="5" aria-label="季節のおいしさを楽しむ。 写真を拡大"><img src="assets/seasonal.jpg" alt="季節のおいしさを楽しむ。" width="1536" height="1024" loading="lazy"><span class="gallery-caption"><span>季節のおいしさを楽しむ。</span><span aria-hidden="true">＋</span></span></button>
+      </div><p class="gallery-note">写真を選ぶと、大きくご覧いただけます。</p>
+    </section>
+    <section class="instagram section-pad" id="instagram" aria-labelledby="instagram-heading"><div><p class="eyebrow">FOLLOW OUR LITTLE MOMENTS</p><h2 id="instagram-heading">Instagram</h2><p>季節のメニューや、日々のひとこまを。</p></div><div class="instagram-action"><a class="outline-button instagram-link" aria-disabled="true">Instagramアカウント 準備中</a><p>アカウントは決まり次第ご案内します。</p></div></section>
+    <section class="visit" aria-labelledby="visit-heading"><div><p class="eyebrow">YOUR EVERYDAY PLACE</p><h2 id="visit-heading">ふらっと、ひと息。</h2></div><a class="outline-button" href="#visit">アクセスを見る <span aria-hidden="true">↗</span></a></section>
+    <section class="access section-pad" id="visit" aria-labelledby="access-heading"><div class="access-copy"><div class="section-heading"><h2 id="access-heading">ACCESS</h2><p>cafe&amp;BAR Caprice</p></div><dl class="visit-facts"><dt>所在地</dt><dd data-address>準備中</dd><dt>営業時間</dt><dd data-hours>準備中</dd></dl><p class="map-note">所在地は未定です。地図は日本全体の仮表示です。</p></div><div class="map-wrap"><iframe id="access-map" src="https://maps.google.com/maps?ll=36.2,138.25&amp;z=4&amp;output=embed" title="アクセスマップ（所在地未定のため日本全体を仮表示）" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><p class="map-fallback">地図が表示されない場合は<a href="https://www.google.com/maps/@36.2,138.25,4z" target="_blank" rel="noopener noreferrer">Google マップを開く ↗</a></p></div></section>
+  </main>
+  <footer><a class="wordmark" href="#"><span>cafe &amp; BAR</span>Caprice</a><p>自主制作・デモサイト</p><span>掲載メニュー・写真はデモ用のイメージです。</span><a class="back-top" href="#" aria-label="ページの先頭へ">↑</a></footer>
+  <dialog id="gallery-dialog" aria-labelledby="gallery-dialog-title"><div class="lightbox-toolbar"><h2 id="gallery-dialog-title">GALLERY</h2><span id="gallery-counter" aria-live="polite"></span><button id="gallery-close" class="circle" aria-label="ギャラリーを閉じる" autofocus>×</button></div><div class="lightbox-stage"><button id="gallery-prev" class="circle" aria-label="前のギャラリー写真">‹</button><img id="gallery-full-image" alt="" width="1536" height="1024"><button id="gallery-next" class="circle" aria-label="次のギャラリー写真">›</button></div><p id="gallery-full-caption" aria-live="polite"></p><p id="gallery-error" hidden>写真を読み込めませんでした。前後の写真をお試しください。</p></dialog>
+  <dialog id="detail-dialog" aria-labelledby="dialog-title"><button class="dialog-close circle" aria-label="閉じる" autofocus>×</button><div id="dialog-content"></div></dialog>
+</body>
+</html>
