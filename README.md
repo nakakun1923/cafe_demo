@@ -1,16 +1,16 @@
 # cafe&BAR Caprice
 
-香川・三木町の「いつもの居場所」を目指すお店のデモサイト。
+カフェの静的デモサイトです。ユーザーの希望により、以前のデザインをTOPとメニューに復元しています。
 
-TOP: index.html（コンセプト・食事紹介・ギャラリー・アクセス）
-メニュー: menu.html（カテゴリ絞り込み・詳細）
-店舗設定: site-settings.js（営業時間・Instagram URL）
+- 以前のデザイン: index.html / menu.html
+- コンセプト別案: concept/index.html / concept/menu.html
 
-両ページで共通のヘッダーを使用。メニューのみ別ページで、ほかのリンクはTOPの該当セクションへ移動します。
+各案のヘッダーは同じ順序・リンク先です。メニューのみ別ページで、それ以外は各TOPの該当セクションへ移動します。TOPフッターから比較案へ、比較案フッターから以前のデザインへ移動できます。
+比較案にはnoindexを設定し、画像は共通assetsを参照しています。
 
 所在地: 〒761-0613 香川県木田郡三木町上高岡２１７１。
-営業時間とInstagramは準備中。写真はAIで制作したデモ用イメージで、実店舗・スタッフ・提供メニューの写真ではありません。提供内容・価格は未確定です。
-
-HTML / CSS / JavaScriptのみ。GitHub Pagesでリポジトリ直下のファイルを配信します。
+営業時間・Instagramは未定。各案のsite-settings.jsで設定できます。
+写真はAIで制作したデモ用イメージです。実店舗・スタッフ・提供メニューの写真ではありません。提供内容・価格は未確定。計測タグは未設定です。
 
 https://nakakun1923.github.io/cafe_demo/
+https://nakakun1923.github.io/cafe_demo/concept/index.html
