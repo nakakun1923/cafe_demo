@@ -64,3 +64,9 @@ dialog[open].is-closing::backdrop{animation:backdrop-out .36s ease both}
 .pickup-copy .concept-note{grid-column:1/-1}
 
 @media(min-width:761px) and (max-width:900px){.hero-copy{padding-top:28px}.hero h1{font-size:38px}}
+
+/* Keep the section label on the same left edge as the surrounding sections. */
+.story{row-gap:24px}
+.story-label{grid-column:1/-1}
+.story-copy h2{margin-top:0}
+@media(max-width:760px){.story{padding-left:var(--gutter);padding-right:var(--gutter)}.story-copy{padding-left:0;padding-right:0}}
