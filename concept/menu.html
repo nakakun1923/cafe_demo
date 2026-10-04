@@ -7,9 +7,18 @@
   <title>メニュー | cafe&amp;BAR Caprice コンセプト案</title>
   <meta name="description" content="Capriceが目指す毎日のごはんと、ひと息の時間のイメージ。メニューはこれから決めていきます。">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23B5532F'/%3E%3Cpath d='M9 13h19v12a7 7 0 0 1-7 7h-5a7 7 0 0 1-7-7zm19 2h3a5 5 0 0 1 0 10h-3' fill='none' stroke='%23FBF8F2' stroke-width='3'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20261004-concept-tonmana">
-  <script src="site-settings.js?v=20261004-concept-tonmana" defer></script>
-  <script src="app.js?v=20261004-concept-tonmana" defer></script>
+  <script>
+    /* Apply the chosen color theme before first paint (?theme= wins over saved choice). */
+    (function () {
+      var id = null;
+      try { id = new URLSearchParams(location.search).get('theme'); } catch (e) {}
+      if (!id) { try { id = localStorage.getItem('concept-theme'); } catch (e) {} }
+      if (id && /^[a-z]{1,20}$/.test(id)) document.documentElement.setAttribute('data-theme', id);
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20261004-concept-colors">
+  <script src="site-settings.js?v=20261004-concept-colors" defer></script>
+  <script src="app.js?v=20261004-concept-colors" defer></script>
   <meta name="robots" content="noindex">
 </head>
 <body id="top">

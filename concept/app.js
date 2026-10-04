@@ -224,3 +224,118 @@ if (settings.instagramUrl) {
     }
   } catch { /* Invalid or unset account keeps the preparation state. */ }
 }
+
+/* ---------- Color themes (comparison tool) ---------- */
+const THEMES = [
+  { id: 'terracotta', name: 'テラコッタ', accent: '#B5532F', paper: '#FBF8F2' },
+  { id: 'sage', name: 'セージ', accent: '#4F7036', paper: '#F8FAF4' },
+  { id: 'indigo', name: '藍', accent: '#2B4C8C', paper: '#FAFBFD' },
+  { id: 'mustard', name: 'からし', accent: '#E3A71F', paper: '#FFFBF0' },
+  { id: 'sakura', name: 'さくら', accent: '#B04F64', paper: '#FFF9F8' },
+  { id: 'sky', name: 'そら', accent: '#2A78AD', paper: '#F9FCFE' },
+];
+const THEME_KEY = 'concept-theme';
+const themeById = (id) => THEMES.find((theme) => theme.id === id);
+const readUrlTheme = () => { try { return new URLSearchParams(location.search).get('theme'); } catch { return null; } };
+const readStoredTheme = () => { try { return localStorage.getItem(THEME_KEY); } catch { return null; } };
+let currentTheme = themeById(readUrlTheme()) || themeById(readStoredTheme()) || THEMES[0];
+
+function faviconFor(theme) {
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='10' fill='${theme.accent}'/><path d='M9 13h19v12a7 7 0 0 1-7 7h-5a7 7 0 0 1-7-7zm19 2h3a5 5 0 0 1 0 10h-3' fill='none' stroke='${theme.paper}' stroke-width='3'/></svg>`)}`;
+}
+function withThemeParam(href, theme) {
+  const url = new URL(href, location.href);
+  url.searchParams.set('theme', theme.id);
+  return url;
+}
+function syncLinks() {
+  if (!readUrlTheme()) return;
+  document.querySelectorAll('a[href]').forEach((link) => {
+    const raw = link.getAttribute('href');
+    if (!/^(index\.html|menu\.html)(#|\?|$)/.test(raw)) return;
+    const url = withThemeParam(raw, currentTheme);
+    link.setAttribute('href', `${raw.split(/[?#]/)[0]}?theme=${currentTheme.id}${url.hash}`);
+  });
+}
+function applyTheme(theme, { persist = false, animate = false } = {}) {
+  const root = document.documentElement;
+  if (animate && !reducedMotion.matches) {
+    root.classList.add('theme-fade');
+    clearTimeout(applyTheme.timer);
+    applyTheme.timer = setTimeout(() => root.classList.remove('theme-fade'), 300);
+  }
+  currentTheme = theme;
+  root.dataset.theme = theme.id;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme.paper;
+  const icon = document.querySelector('link[rel="icon"]');
+  if (icon) icon.href = faviconFor(theme);
+  if (persist) {
+    try { localStorage.setItem(THEME_KEY, theme.id); } catch { /* storage unavailable */ }
+    try {
+      const url = withThemeParam(location.href, theme);
+      history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+    } catch { /* ignore */ }
+  }
+  syncLinks();
+}
+applyTheme(currentTheme);
+
+function buildSwitcher() {
+  const root = document.createElement('div');
+  root.className = 'theme-switcher';
+  root.innerHTML = `<div class="theme-panel" id="theme-panel" hidden><p class="theme-panel-title">カラーを比べる</p><div class="theme-options" role="radiogroup" aria-label="カラーテーマ"></div></div>` +
+    `<button type="button" class="theme-toggle" aria-expanded="false" aria-controls="theme-panel"><span class="swatch" aria-hidden="true"></span><span class="theme-toggle-label">カラー</span></button>`;
+  const toggle = root.querySelector('.theme-toggle');
+  const panel = root.querySelector('.theme-panel');
+  const group = root.querySelector('.theme-options');
+  const setSwatch = (el, theme) => { el.style.setProperty('--sw-a', theme.accent); el.style.setProperty('--sw-p', theme.paper); };
+  const options = THEMES.map((theme) => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'theme-option'; button.setAttribute('role', 'radio'); button.dataset.theme = theme.id;
+    button.innerHTML = '<span class="swatch" aria-hidden="true"></span><span class="theme-name"></span>';
+    button.querySelector('.theme-name').textContent = theme.name;
+    setSwatch(button.querySelector('.swatch'), theme);
+    group.append(button);
+    return button;
+  });
+  const refresh = () => {
+    options.forEach((button) => {
+      const on = button.dataset.theme === currentTheme.id;
+      button.setAttribute('aria-checked', String(on));
+      button.tabIndex = on ? 0 : -1;
+    });
+    setSwatch(toggle.querySelector('.swatch'), currentTheme);
+    toggle.setAttribute('aria-label', `カラー(現在: ${currentTheme.name})`);
+  };
+  const choose = (index, focus = true) => {
+    const next = (index + THEMES.length) % THEMES.length;
+    applyTheme(THEMES[next], { persist: true, animate: true });
+    refresh();
+    if (focus) options[next].focus();
+  };
+  const setOpen = (open, returnFocus = false) => {
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) options.find((button) => button.tabIndex === 0).focus();
+    else if (returnFocus) toggle.focus();
+  };
+  toggle.addEventListener('click', () => setOpen(panel.hidden));
+  options.forEach((button, index) => {
+    button.addEventListener('click', () => choose(index));
+    button.addEventListener('keydown', (event) => {
+      const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      if (event.key in keys) { event.preventDefault(); choose(index + keys[event.key]); }
+      else if (event.key === 'Home') { event.preventDefault(); choose(0); }
+      else if (event.key === 'End') { event.preventDefault(); choose(THEMES.length - 1); }
+    });
+  });
+  root.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !panel.hidden) { event.stopPropagation(); setOpen(false, true); }
+  });
+  document.addEventListener('click', (event) => { if (!panel.hidden && !root.contains(event.target)) setOpen(false); });
+  refresh();
+  document.body.append(root);
+  document.body.classList.add('has-theme-switcher');
+}
+buildSwitcher();
