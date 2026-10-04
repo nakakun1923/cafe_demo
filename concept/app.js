@@ -1,4 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
+// Wrap each phrase (separated by "|") in a no-break span so Japanese text only wraps at phrase boundaries.
+const phrases = (text) => text.split('|').map((part) => `<span class="nw">${part}</span>`).join('');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const navToggle = $('.nav-toggle');
 const navigation = $('#navigation');
@@ -68,9 +70,9 @@ function enableSwipe(element, callback) {
 }
 
 const products = {
-  lunch: { title: 'ひるごはん', label: 'ランチ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と野菜の副菜、ごはん、汁物を並べたお盆は、私たちが目指す日々のごはんのイメージです。適度にお腹を満たせて、栄養のバランスにも、お財布にも気を配る。「近くにちょうどいいお店があって助かる」と思ってもらえるごはんを目指しています。' },
-  coffee: { title: 'ひと息・コーヒー', label: 'コーヒー', image: 'coffee', alt: '湯気の立つコーヒーを白いカップで出した、カフェの席のイメージ', description: 'ひとりで気持ちをゆるめる時間にも、同僚と話す時間にも。日々のひと息に寄り添う一杯をイメージしました。' },
-  cheesecake: { title: 'スイーツ', label: 'スイーツ', image: 'cheesecake', alt: '焼き色のついたチーズケーキの一切れとフォークのイメージ', description: '少し甘いものと一緒に、肩の力を抜くひと休みを。気楽に過ごす午後の時間をイメージした写真です。' },
+  lunch: { title: 'ひるごはん', label: 'ランチ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と野菜の|副菜、|ごはん、|汁物を|並べたお盆は、|私たちが|目指す|日々の|ごはんの|イメージです。|適度に|お腹を|満たせて、|栄養の|バランスにも、|お財布にも|気を配る。|「近くに|ちょうどいい|お店があって|助かる」と|思って|もらえる|ごはんを|目指しています。' },
+  coffee: { title: 'ひと息・コーヒー', label: 'コーヒー', image: 'coffee', alt: '湯気の立つコーヒーを白いカップで出した、カフェの席のイメージ', description: 'ひとりで|気持ちを|ゆるめる時間にも、|同僚と|話す時間にも。|日々の|ひと息に|寄り添う|一杯を|イメージしました。' },
+  cheesecake: { title: 'スイーツ', label: 'スイーツ', image: 'cheesecake', alt: '焼き色のついたチーズケーキの一切れとフォークのイメージ', description: '少し甘いものと|一緒に、|肩の力を|抜く|ひと休みを。|気楽に|過ごす|午後の|時間を|イメージした|写真です。' },
 };
 function closeDialog(target) {
   if (!target?.open || target.classList.contains('is-closing')) return;
@@ -98,10 +100,10 @@ const dialogContent = $('#dialog-content');
 let opener = null;
 function showDetail(key) {
   if (!dialog.open) opener = document.activeElement;
-  const note = '<p class="detail-note">写真はイメージです。提供内容は決まり次第お知らせします。</p>';
+  const note = `<p class="detail-note">${phrases('写真は|イメージです。|提供内容は|決まり次第|お知らせします。')}</p>`;
   if (products[key]) {
     const product = products[key];
-    dialogContent.innerHTML = `<img class="detail-photo" src="../assets/${product.image}.jpg" alt="${product.alt}"><div class="detail-body"><p class="label">${product.label}</p><h2 id="dialog-title">${product.title}</h2><p>${product.description}</p>${note}</div>`;
+    dialogContent.innerHTML = `<img class="detail-photo" src="../assets/${product.image}.jpg" alt="${product.alt}"><div class="detail-body"><p class="label">${product.label}</p><h2 id="dialog-title">${product.title}</h2><p>${phrases(product.description)}</p>${note}</div>`;
   } else return;
   if (!dialog.open) dialog.showModal();
   dialog.scrollTop = 0;
@@ -156,7 +158,8 @@ if (galleryButtons.length) {
     galleryImage.src = photo.src;
     galleryImage.alt = photo.alt;
     $('#gallery-counter').textContent = `${String(galleryIndex + 1).padStart(2, '0')} / ${String(galleryButtons.length).padStart(2, '0')}`;
-    $('#gallery-full-caption').textContent = galleryButtons[galleryIndex].querySelector('.gallery-caption')?.textContent || photo.alt;
+    const captionSource = galleryButtons[galleryIndex].querySelector('.gallery-caption');
+    if (captionSource) $('#gallery-full-caption').innerHTML = captionSource.innerHTML; else $('#gallery-full-caption').textContent = photo.alt;
     requestAnimationFrame(() => galleryImage.classList.remove('is-changing'));
   }
   galleryButtons.forEach((button, index) => button.addEventListener('click', () => {
@@ -205,7 +208,7 @@ if (map && settings.mapEmbedUrl) {
   if (map.src !== settings.mapEmbedUrl) map.src = settings.mapEmbedUrl;
   if (!settings.mapIsPlaceholder) {
     map.title = 'cafe&BAR Caprice アクセスマップ';
-    const mapNote = $('.map-note'); if (mapNote) mapNote.textContent = '地図は指定住所をもとに表示しています。';
+    const mapNote = $('.map-note'); if (mapNote) mapNote.innerHTML = phrases('地図は|指定住所を|もとに|表示しています。');
     const fallbackLink = $('.map-fallback a');
     if (fallbackLink) fallbackLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || 'cafe&BAR Caprice')}`;
   }
