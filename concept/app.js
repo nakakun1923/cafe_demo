@@ -227,7 +227,7 @@ if (settings.instagramUrl) {
 
 /* ---------- Color themes (comparison tool) ---------- */
 const THEMES = [
-  { id: 'kissa', name: '喫茶', accent: '#4F6A55', paper: '#F3EBDD', chrome: '#3B281C' },
+  { id: 'kissa', name: '喫茶', accent: '#4F6A55', paper: '#F3EBDD' },
   { id: 'terracotta', name: 'テラコッタ', accent: '#B5532F', paper: '#FBF8F2' },
   { id: 'sage', name: 'セージ', accent: '#4F7036', paper: '#F8FAF4' },
   { id: 'indigo', name: '藍', accent: '#2B4C8C', paper: '#FAFBFD' },
@@ -268,7 +268,7 @@ function applyTheme(theme, { persist = false, animate = false } = {}) {
   currentTheme = theme;
   root.dataset.theme = theme.id;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.content = theme.chrome || theme.paper;
+  if (meta) meta.content = theme.paper;
   const icon = document.querySelector('link[rel="icon"]');
   if (icon) icon.href = faviconFor(theme);
   if (persist) {
