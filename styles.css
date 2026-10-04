@@ -26,3 +26,35 @@
 /* Keep the comparison route secondary to the restored design. */
 .design-comparison{font-size:11px;text-decoration:underline;text-underline-offset:4px}
 
+
+/* Shared photo interaction, gentle transitions and desktop alignment. */
+@media(min-width:761px){.story{padding-left:var(--gutter);padding-right:var(--gutter)}}
+.hero-image{transition:opacity 2.2s cubic-bezier(.22,.61,.36,1)}
+#hero-progress.playing{animation-duration:8500ms}
+.pickup-visual,#pickup-text{transition:opacity .6s ease,transform .7s ease}
+.pickup-visual.is-changing,#pickup-text.is-changing{opacity:0;transform:translateY(4px)}
+.menu-photo .photo-zoom,.photo-zoom{position:absolute;right:12px;bottom:12px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#f8f4ebeb;color:var(--ink);border:1px solid #30241e26;opacity:1;transform:none;pointer-events:none;box-shadow:0 3px 14px #30241e18;transition:background .4s ease}
+.photo-zoom svg{display:block}
+.menu-item .menu-photo img,.catalog-photo img{transition:transform 1.1s cubic-bezier(.22,.61,.36,1)}
+.menu-item:hover .menu-photo img,.menu-item:focus-visible .menu-photo img,.catalog-item button:hover .catalog-photo img,.catalog-item button:focus-visible .catalog-photo img{transform:scale(1.045)!important}
+.catalog-photo{position:relative;overflow:hidden;margin-bottom:22px;aspect-ratio:3/2}
+.catalog-photo img{width:100%;height:auto;margin-bottom:0}
+dialog[open]{animation:dialog-in .5s cubic-bezier(.22,.61,.36,1) both}
+dialog[open]::backdrop{animation:backdrop-in .5s ease both}
+dialog[open].is-closing{animation:dialog-out .36s ease both;pointer-events:none}
+dialog[open].is-closing::backdrop{animation:backdrop-out .36s ease both}
+@keyframes dialog-in{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes dialog-out{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(10px) scale(.99)}}
+@keyframes backdrop-in{from{background-color:#1b120c00;backdrop-filter:blur(0)}to{background-color:#1b120cbd;backdrop-filter:blur(5px)}}
+@keyframes backdrop-out{from{background-color:#1b120cbd;backdrop-filter:blur(5px)}to{background-color:#1b120c00;backdrop-filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){dialog[open],dialog[open]::backdrop{animation:none}.hero-image,.pickup-visual,#pickup-text,.menu-item .menu-photo img,.catalog-photo img{transition:none}.menu-item:hover .menu-photo img,.menu-item:focus-visible .menu-photo img,.catalog-item button:hover .catalog-photo img,.catalog-item button:focus-visible .catalog-photo img{transform:none!important}}
+
+#gallery-full-image{transition:opacity .55s ease}
+#gallery-full-image.is-changing{opacity:0}
+@media(max-width:760px){.menu-photo .photo-zoom,.photo-zoom{width:34px;height:34px;right:9px;bottom:9px}}
+@media(prefers-reduced-motion:reduce){#gallery-full-image{transition:none}}
+
+.pickup-visual.is-changing,#pickup-text.is-changing{transition-duration:.28s}
+#gallery-full-image.is-changing{transition-duration:.2s}
+
+@media(min-width:761px) and (max-width:900px){.hero-copy{padding-top:28px}.hero h1{font-size:38px}}

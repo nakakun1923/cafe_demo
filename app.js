@@ -68,7 +68,7 @@ function scheduleSlide() {
   void progress.offsetWidth;
   if (autoplay && heroVisible && !hovering && !focusWithin && !document.hidden && !document.querySelector('dialog[open]')) {
     progress.classList.add('playing');
-    timer = setTimeout(() => changeSlide(1), 6500);
+    timer = setTimeout(() => changeSlide(1), 8500);
   }
 }
 function updatePause() {
@@ -105,9 +105,23 @@ const picks = [
   { label: 'OUR DAILY BREAD', title: 'ひとつずつ、丁寧に。', description: '香ばしい焼き色と、バターのやさしい香り。', tag: 'FRESH FROM THE OVEN', image: 'story', alt: 'パン職人がクロワッサンを並べる手元', detail: 'bakery' },
 ];
 let pickIndex = 0;
-function changePick(direction) {
+let pickTransition = 0;
+async function changePick(direction) {
   pickIndex = (pickIndex + direction + picks.length) % picks.length;
   const pick = picks[pickIndex];
+  const transition = ++pickTransition;
+  const visual = $('.pickup-visual');
+  const text = $('#pickup-text');
+  const nextImage = new Image();
+  nextImage.src = `assets/${pick.image}.jpg`;
+  if (!reducedMotion.matches) {
+    visual?.classList.add('is-changing'); text?.classList.add('is-changing');
+    await Promise.all([
+      new Promise((resolve) => setTimeout(resolve, 280)),
+      Promise.race([nextImage.decode().catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1500))]),
+    ]);
+  }
+  if (transition !== pickTransition) return;
   $('#pickup-image').src = `assets/${pick.image}.jpg`;
   $('#pickup-image').alt = pick.alt;
   $('#pickup-label').textContent = pick.label;
@@ -117,6 +131,7 @@ function changePick(direction) {
   $('#pickup-detail').dataset.detail = pick.detail;
   $('#pickup-count').innerHTML = `0${pickIndex + 1} <span class="muted">— 03</span>`;
   $('#pickup-count').setAttribute('aria-label', `3件中${pickIndex + 1}件目`);
+  requestAnimationFrame(() => { visual?.classList.remove('is-changing'); text?.classList.remove('is-changing'); });
 }
 $('#pickup-prev')?.addEventListener('click', () => changePick(-1));
 $('#pickup-next')?.addEventListener('click', () => changePick(1));
@@ -144,6 +159,27 @@ const products = {
   seasonal: { title: '栗のモンブラン', label: 'AUTUMN SPECIAL', image: 'seasonal', alt: '栗のクリームを絞ったモンブラン', description: 'なめらかな栗のクリームに、香ばしい土台を合わせて。栗のやさしい甘さとコーヒーのほろ苦さを、一緒にゆっくり楽しむ秋のひと皿です。', sub: '季節のスイーツ' },
   cheesecake: { title: 'ベイクドチーズケーキ', label: 'SWEETS', image: 'cheesecake', alt: 'こんがり焼き色のついたチーズケーキ', description: 'しっとり濃厚なチーズのコクと、こんがり焼けた表面の香ばしさ。少しずつ味わいたくなる、午後のコーヒーによく合うケーキです。', sub: 'しっとり濃厚、ほどよい甘さ' },
 };
+function closeDialog(target) {
+  if (!target?.open || target.classList.contains('is-closing')) return;
+  if (reducedMotion.matches) { target.close(); return; }
+  target.classList.add('is-closing');
+  let fallback;
+  const finish = () => {
+    clearTimeout(fallback);
+    target.removeEventListener('animationend', onAnimationEnd);
+    target.classList.remove('is-closing');
+    target.close();
+  };
+  const onAnimationEnd = (event) => {
+    if (event.target === target && event.animationName === 'dialog-out') finish();
+  };
+  target.addEventListener('animationend', onAnimationEnd);
+  fallback = setTimeout(finish, 450);
+}
+document.querySelectorAll('dialog').forEach((target) => {
+  target.addEventListener('cancel', (event) => { event.preventDefault(); closeDialog(target); });
+});
+
 const dialog = $('#detail-dialog');
 const dialogContent = $('#dialog-content');
 let opener = null;
@@ -164,10 +200,10 @@ document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-detail]');
   if (trigger) showDetail(trigger.dataset.detail);
 });
-$('.dialog-close').addEventListener('click', () => dialog.close());
+$('.dialog-close').addEventListener('click', () => closeDialog(dialog));
 dialog.addEventListener('click', (event) => {
   const rect = dialog.getBoundingClientRect();
-  if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
+  if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) closeDialog(dialog);
 });
 dialog.addEventListener('close', () => {
   document.body.classList.remove('modal-open');
@@ -204,14 +240,26 @@ if (galleryTrack) {
   const right = $('#gallery-scroll-next');
   let galleryIndex = 0;
   let galleryOpener;
-  function setGalleryPhoto(index) {
+  let galleryTransition = 0;
+  async function setGalleryPhoto(index) {
     galleryIndex = (index + galleryButtons.length) % galleryButtons.length;
     const photo = galleryButtons[galleryIndex].querySelector('img');
+    const transition = ++galleryTransition;
+    if (galleryDialog.open && !reducedMotion.matches) {
+      galleryImage.classList.add('is-changing');
+      const nextImage = new Image(); nextImage.src = photo.src;
+      await Promise.all([
+        new Promise((resolve) => setTimeout(resolve, 200)),
+        Promise.race([nextImage.decode().catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1500))]),
+      ]);
+    }
+    if (transition !== galleryTransition) return;
     $('#gallery-error').hidden = true;
     galleryImage.src = photo.src;
     galleryImage.alt = photo.alt;
     $('#gallery-counter').textContent = `${String(galleryIndex + 1).padStart(2, '0')} / ${String(galleryButtons.length).padStart(2, '0')}`;
     $('#gallery-full-caption').textContent = photo.alt;
+    requestAnimationFrame(() => galleryImage.classList.remove('is-changing'));
   }
   function updateGalleryArrows() {
     left.disabled = galleryTrack.scrollLeft < 2;
@@ -231,7 +279,7 @@ if (galleryTrack) {
   }));
   $('#gallery-prev').addEventListener('click', () => setGalleryPhoto(galleryIndex - 1));
   $('#gallery-next').addEventListener('click', () => setGalleryPhoto(galleryIndex + 1));
-  $('#gallery-close').addEventListener('click', () => galleryDialog.close());
+  $('#gallery-close').addEventListener('click', () => closeDialog(galleryDialog));
   galleryImage.addEventListener('error', () => { $('#gallery-error').hidden = false; });
   galleryDialog.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -240,7 +288,7 @@ if (galleryTrack) {
   });
   galleryDialog.addEventListener('click', (event) => {
     const rect = galleryDialog.getBoundingClientRect();
-    if (event.target === galleryDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) galleryDialog.close();
+    if (event.target === galleryDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) closeDialog(galleryDialog);
   });
   galleryDialog.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
@@ -259,7 +307,7 @@ if (map && settings.mapEmbedUrl) {
   if (map.src !== settings.mapEmbedUrl) map.src = settings.mapEmbedUrl;
   if (!settings.mapIsPlaceholder) {
     map.title = 'cafe&BAR Caprice アクセスマップ';
-    $('.map-note').textContent = settings.address || '地図で所在地をご確認ください。';
+    $('.map-note').textContent = '地図は指定住所をもとに表示しています。';
     $('.map-fallback a').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || 'cafe&BAR Caprice')}`;
   }
 }
