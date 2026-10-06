@@ -53,26 +53,9 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-function enableSwipe(element, callback) {
-  if (!element) return;
-  let start = null;
-  element.addEventListener('touchstart', (event) => {
-    start = event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
-  }, { passive: true });
-  element.addEventListener('touchend', (event) => {
-    if (!start) return;
-    const dx = event.changedTouches[0].clientX - start.x;
-    const dy = event.changedTouches[0].clientY - start.y;
-    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) callback(dx < 0 ? 1 : -1);
-    start = null;
-  }, { passive: true });
-  element.addEventListener('touchcancel', () => { start = null; }, { passive: true });
-}
-
 const products = {
   lunch: { title: 'ひるごはん', label: 'ランチ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と|野菜の|副菜、|ごはん、|汁物を|並べた|お盆は、|出したい|ごはんの|イメージです。|おなかいっぱいに|なって、|毎日来ても|困らない|値段に|したいと|思っています。' },
   coffee: { title: 'コーヒー', label: 'コーヒー', image: 'coffee', alt: '湯気の立つコーヒーを白いカップで出した、カフェの席のイメージ', description: 'ゆっくり|話したい日も、|ひとりで|少し|休みたい日も、|気軽に|頼める|一杯に|したいです。' },
-  cheesecake: { title: 'スイーツ', label: 'スイーツ', image: 'cheesecake', alt: '焼き色のついたチーズケーキの一切れとフォークのイメージ', description: 'コーヒーと|一緒に、|ちょっと|甘いもので|ひと休み|できたら|いいなと|思っています。|写真は|そのイメージです。' },
 };
 function closeDialog(target) {
   if (!target?.open || target.classList.contains('is-closing')) return;
@@ -132,61 +115,6 @@ if (!reducedMotion.matches && 'IntersectionObserver' in window) {
     });
   }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
   document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
-}
-
-const galleryButtons = [...document.querySelectorAll('[data-gallery]')];
-if (galleryButtons.length) {
-  const galleryDialog = $('#gallery-dialog');
-  const galleryImage = $('#gallery-full-image');
-  let galleryIndex = 0;
-  let galleryOpener;
-  let galleryTransition = 0;
-  async function setGalleryPhoto(index) {
-    galleryIndex = (index + galleryButtons.length) % galleryButtons.length;
-    const photo = galleryButtons[galleryIndex].querySelector('img');
-    const transition = ++galleryTransition;
-    if (galleryDialog.open && !reducedMotion.matches) {
-      galleryImage.classList.add('is-changing');
-      const nextImage = new Image(); nextImage.src = photo.src;
-      await Promise.all([
-        new Promise((resolve) => setTimeout(resolve, 200)),
-        Promise.race([nextImage.decode().catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1500))]),
-      ]);
-    }
-    if (transition !== galleryTransition) return;
-    $('#gallery-error').hidden = true;
-    galleryImage.src = photo.src;
-    galleryImage.alt = photo.alt;
-    $('#gallery-counter').textContent = `${String(galleryIndex + 1).padStart(2, '0')} / ${String(galleryButtons.length).padStart(2, '0')}`;
-    const captionSource = galleryButtons[galleryIndex].querySelector('.gallery-caption');
-    if (captionSource) $('#gallery-full-caption').innerHTML = captionSource.innerHTML; else $('#gallery-full-caption').textContent = photo.alt;
-    requestAnimationFrame(() => galleryImage.classList.remove('is-changing'));
-  }
-  galleryButtons.forEach((button, index) => button.addEventListener('click', () => {
-    galleryOpener = button;
-    setGalleryPhoto(index);
-    galleryDialog.showModal();
-    document.body.classList.add('modal-open');
-    $('#gallery-close').focus();
-  }));
-  $('#gallery-prev').addEventListener('click', () => setGalleryPhoto(galleryIndex - 1));
-  $('#gallery-next').addEventListener('click', () => setGalleryPhoto(galleryIndex + 1));
-  $('#gallery-close').addEventListener('click', () => closeDialog(galleryDialog));
-  galleryImage.addEventListener('error', () => { $('#gallery-error').hidden = false; });
-  galleryDialog.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-      event.preventDefault(); setGalleryPhoto(galleryIndex + (event.key === 'ArrowRight' ? 1 : -1));
-    }
-  });
-  galleryDialog.addEventListener('click', (event) => {
-    const rect = galleryDialog.getBoundingClientRect();
-    if (event.target === galleryDialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) closeDialog(galleryDialog);
-  });
-  galleryDialog.addEventListener('close', () => {
-    document.body.classList.remove('modal-open');
-    galleryOpener?.focus();
-  });
-  enableSwipe(galleryImage, (direction) => setGalleryPhoto(galleryIndex + direction));
 }
 
 const settings = window.CAPRICE_SETTINGS || {};
