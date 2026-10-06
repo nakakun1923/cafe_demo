@@ -70,10 +70,10 @@ function enableSwipe(element, callback) {
 }
 
 const products = {
-  lunch: { title: 'ひるごはん', label: 'ランチ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と野菜の|副菜、|ごはん、|汁物を|並べたお盆は、|私たちが|目指す|日々の|ごはんの|イメージです。|適度に|お腹を|満たせて、|栄養の|バランスにも、|お財布にも|気を配る。|「近くに|ちょうどいい|お店があって|助かる」と|思って|もらえる|ごはんを|目指しています。' },
-  pause: { title: '話すことが、きっかけに', label: '出会いと、会話', image: 'community', alt: '窓辺のテーブルで、コーヒーを片手に話す人たちのイメージ', description: '話したい人も、|ひとりの時間を|楽しみたい人も、|それぞれの|ペースで。|人との|出会いや|会話が、|誰かの|夢や目標に|向かう|きっかけになる。|そんな|地域の|つながりを|育てたいと|考えています。' },
-  coffee: { title: 'ひと息・コーヒー', label: 'コーヒー', image: 'coffee', alt: '湯気の立つコーヒーを白いカップで出した、カフェの席のイメージ', description: 'ひとりで|気持ちを|ゆるめる時間にも、|同僚と|話す時間にも。|日々の|ひと息に|寄り添う|一杯を|イメージしました。' },
-  cheesecake: { title: 'スイーツ', label: 'スイーツ', image: 'cheesecake', alt: '焼き色のついたチーズケーキの一切れとフォークのイメージ', description: '少し甘いものと|一緒に、|肩の力を|抜く|ひと休みを。|気楽に|過ごす|午後の|時間を|イメージした|写真です。' },
+  lunch: { title: 'ひるごはん', label: 'ランチ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と|野菜の|副菜、|ごはん、|汁物を|並べた|お盆は、|出したい|ごはんの|イメージです。|おなかいっぱいに|なって、|毎日来ても|困らない|値段に|したいと|思っています。' },
+  pause: { title: '話すことが、きっかけになる', label: '出会いと、会話', image: 'community', alt: '窓辺のテーブルで、コーヒーを片手に話す人たちのイメージ', description: 'お客さま同士でも、|お店の人とでも、|ちょっとした|会話から|何かが|始まることが|あると|思っています。|話したくない日は、|ひとりで|ゆっくり|してもらって|大丈夫です。' },
+  coffee: { title: 'コーヒー', label: 'コーヒー', image: 'coffee', alt: '湯気の立つコーヒーを白いカップで出した、カフェの席のイメージ', description: 'ゆっくり|話したい日も、|ひとりで|少し|休みたい日も、|気軽に|頼める|一杯に|したいです。' },
+  cheesecake: { title: 'スイーツ', label: 'スイーツ', image: 'cheesecake', alt: '焼き色のついたチーズケーキの一切れとフォークのイメージ', description: 'コーヒーと|一緒に、|ちょっと|甘いもので|ひと休み|できたら|いいなと|思っています。|写真は|そのイメージです。' },
 };
 function closeDialog(target) {
   if (!target?.open || target.classList.contains('is-closing')) return;
@@ -209,7 +209,7 @@ if (map && settings.mapEmbedUrl) {
   if (map.src !== settings.mapEmbedUrl) map.src = settings.mapEmbedUrl;
   if (!settings.mapIsPlaceholder) {
     map.title = 'cafe&BAR Caprice アクセスマップ';
-    const mapNote = $('.map-note'); if (mapNote) mapNote.innerHTML = phrases('地図は|指定住所を|もとに|表示しています。');
+    const mapNote = $('.map-note'); if (mapNote) mapNote.innerHTML = phrases('地図は|住所を|もとに|表示しています。');
     const fallbackLink = $('.map-fallback a');
     if (fallbackLink) fallbackLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || 'cafe&BAR Caprice')}`;
   }
