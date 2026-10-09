@@ -107,14 +107,46 @@ dialog.addEventListener('close', () => {
   if (opener?.isConnected) opener.focus();
 });
 
+// iOS only fires :active when some touch listener exists.
+document.addEventListener('touchstart', () => {}, { passive: true });
+
+const root = document.documentElement;
 if (!reducedMotion.matches && 'IntersectionObserver' in window) {
-  document.documentElement.classList.add('js-motion');
+  root.classList.add('js-motion');
+  window.__capriceMotion = true;
+  // Hero: start once the photo is ready (or after 1.2s at most), so the settle is not played on a blank frame.
+  const heroImage = $('.hero-photo img');
+  const heroGo = () => requestAnimationFrame(() => root.classList.add('hero-go'));
+  if (!heroImage || heroImage.complete) heroGo();
+  else { heroImage.addEventListener('load', heroGo, { once: true }); heroImage.addEventListener('error', heroGo, { once: true }); setTimeout(heroGo, 1200); }
+
+  const show = (element) => {
+    if (element.classList.contains('visible')) return;
+    element.classList.add('visible');
+    if (element.classList.contains('tl-time')) element.closest('.tl-item')?.classList.add('icons-on');
+    setTimeout(() => element.classList.add('done'), 2600);
+  };
+  let observerFired = false;
   const revealObserver = new IntersectionObserver((entries) => {
+    observerFired = true;
     entries.forEach((entry) => {
-      if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); }
+      if (entry.isIntersecting) { show(entry.target); revealObserver.unobserve(entry.target); }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-  document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
+  }, { threshold: 0.15 });
+  const targets = [...document.querySelectorAll('.reveal')];
+  targets.forEach((element) => revealObserver.observe(element));
+
+  // The scroll sweep is the main trigger for clipped photos (a fully clipped target may never "intersect") and a safety net for the rest:
+  // anything at or above ~85% of the viewport height (on screen or already scrolled past) is shown.
+  const sweep = () => targets.forEach((element) => {
+    if (!element.classList.contains('visible') && element.getBoundingClientRect().top < innerHeight * 0.85) show(element);
+  });
+  requestAnimationFrame(sweep);
+  let sweepQueued = false;
+  const queueSweep = () => { if (sweepQueued) return; sweepQueued = true; requestAnimationFrame(() => { sweepQueued = false; sweep(); }); };
+  addEventListener('scroll', queueSweep, { passive: true });
+  addEventListener('resize', queueSweep);
+  setTimeout(() => { if (!observerFired) targets.forEach(show); sweep(); }, 3000);
 }
 
 const settings = window.CAPRICE_SETTINGS || {};

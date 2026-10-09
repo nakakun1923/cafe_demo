@@ -210,9 +210,68 @@ dialog.is-closing { animation: dialog-out .22s ease forwards; }
 .detail-body h2 { font-size: 1.625rem; margin-bottom: 12px; }
 .detail-note { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .875rem; color: var(--ink-2); }
 
-/* ---------- Reveal ---------- */
-.js-motion .reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s ease, transform .8s ease; }
-.js-motion .reveal.visible { opacity: 1; transform: none; }
+/* ---------- Motion: page load + scroll (hidden states exist only while <html> has .js-motion) ---------- */
+.tl-photo, .catalog-photo { transition: transform .25s var(--ease); }
+.button:active, .tl-photo:active, .catalog-photo:active { transform: scale(.97); }
+.tl-photo:active, .catalog-photo:active { transform: scale(.985); }
+.text-link:active, .footer-links a:active, .header nav a:not(.visit-link):active { opacity: .7; }
+.button { transition: transform .2s var(--ease), border-color .3s var(--ease), color .3s var(--ease); }
+
+/* hero on load */
+@keyframes hero-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes hero-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hero-settle { from { scale: 1.08; } to { scale: 1; } }
+.hero .label { --h: 0; } .hero .brand-sub { --h: 1; } .hero .brand-name { --h: 2; }
+.hero-tagline { --h: 3; } .hero-lead { --h: 4; } .hero-actions { --h: 5; }
+.js-motion .hero-photo img, .js-motion .hero-copy > :not(h1), .js-motion .hero h1 > span { opacity: 0; }
+.js-motion.hero-go .hero-photo img { opacity: 1; animation: hero-fade .6s ease-out backwards, hero-settle 1.8s var(--ease) backwards; }
+.js-motion.hero-go .hero-copy > :not(h1), .js-motion.hero-go .hero h1 > span { opacity: 1; animation: hero-rise .8s var(--ease) backwards; animation-delay: calc(250ms + var(--h) * 120ms); }
+
+/* scroll reveals: text blocks fade up, children staggered */
+.js-motion :is(.section-head, .about-copy, .tl-copy, .tl-night).reveal > *,
+.js-motion .catalog-item.reveal .catalog-body,
+.js-motion :is(.menu-cta, .access-copy, .map-wrap).reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: calc(var(--base, 0ms) + var(--i, 0) * 140ms); }
+.js-motion :is(.section-head, .about-copy, .tl-copy, .tl-night).reveal > :nth-child(2) { --i: 1; }
+.js-motion :is(.section-head, .about-copy, .tl-copy, .tl-night).reveal > :nth-child(3) { --i: 2; }
+.js-motion :is(.about-copy, .tl-copy, .tl-night).reveal { --base: 250ms; }
+.js-motion .tl-copy.reveal, .js-motion .tl-night.reveal { --base: 400ms; }
+.js-motion .catalog-item.reveal .catalog-body { --base: 450ms; }
+.js-motion .catalog-item.reveal:nth-child(2) .catalog-body { --base: 600ms; }
+.js-motion .map-wrap.reveal { --base: 200ms; }
+.js-motion :is(.section-head, .about-copy, .tl-copy, .tl-night).visible > *,
+.js-motion .catalog-item.visible .catalog-body,
+.js-motion :is(.menu-cta, .access-copy, .map-wrap).visible { opacity: 1; transform: none; }
+
+/* timeline time label slides in from the left */
+.js-motion .tl-time.reveal { opacity: 0; transform: translateX(-22px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.js-motion .tl-time.visible { opacity: 1; transform: none; }
+
+/* photos: curtain mask + inner image settling from 1.12 */
+.js-motion .about-photo.reveal, .js-motion .tl-photo.reveal, .js-motion .catalog-item.reveal .catalog-photo { clip-path: inset(0 0 100% 0 round 5px); transition: clip-path 1.1s var(--ease) var(--pd, 0ms), transform .25s var(--ease); }
+.js-motion .tl-photo.reveal { --pd: 150ms; clip-path: inset(0 100% 0 0 round 5px); }
+.js-motion .tl-flip .tl-photo.reveal { clip-path: inset(0 0 0 100% round 5px); }
+.js-motion .catalog-item.reveal:nth-child(2) .catalog-photo { --pd: 150ms; }
+.js-motion .about-photo.reveal img, .js-motion .tl-photo.reveal img, .js-motion .catalog-item.reveal .catalog-photo img { scale: 1.12; transition: scale 1.5s var(--ease) var(--pd, 0ms), transform .9s var(--ease), filter .6s var(--ease); }
+.js-motion .about-photo.visible, .js-motion .tl-photo.visible, .js-motion .catalog-item.visible .catalog-photo { clip-path: inset(0 0 0 0 round 5px); }
+.js-motion .about-photo.visible img, .js-motion .tl-photo.visible img, .js-motion .catalog-item.visible .catalog-photo img { scale: none; }
+/* once settled, drop the clip so focus outlines are not cut off */
+.js-motion .about-photo.done, .js-motion .tl-photo.done, .js-motion .catalog-item.done .catalog-photo { clip-path: none; }
+
+/* day icons: line draw-on (pathLength=1), sun rises, moon last */
+@keyframes ic-in { from { opacity: 0; } 35% { opacity: .6; } to { opacity: var(--ic-o); } }
+@keyframes ic-rise { from { opacity: 0; transform: translateY(12px); } 35% { opacity: .6; } to { opacity: var(--ic-o); transform: none; } }
+.ic { --ic-o: .24; }
+.ic-leaf, .ic-window { --ic-o: .2; }
+.ic-stars { --ic-o: .26; }
+.ic-bowl, .ic-cup, .ic-stars { --d: 250ms; }
+.ic-leaf, .ic-window, .ic-lamp { --d: 500ms; }
+.ic-moon { --d: 900ms; }
+.js-motion .ic { opacity: 0; }
+.js-motion .ic :is(path, circle, rect) { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s cubic-bezier(.4, 0, .2, 1) var(--d, 0ms); }
+.js-motion .ic mask *, .js-motion .tl-item.icons-on .ic mask * { stroke-dasharray: none; stroke-dashoffset: 0; transition: none; }
+.js-motion .tl-item.icons-on .ic { animation: ic-in 1.8s ease-out var(--d, 0ms) both; }
+.js-motion .tl-item.icons-on .ic-sun, .js-motion .tl-item.icons-on .ic-suncloud { animation-name: ic-rise; }
+.js-motion .tl-item.icons-on .ic :is(path, circle, rect) { stroke-dashoffset: 0; }
 
 /* ---------- Photo grade: one shoot ---------- */
 .hero-photo img, .catalog-photo img { filter: var(--photo-filter); }
@@ -336,7 +395,6 @@ dialog.is-closing { animation: dialog-out .22s ease forwards; }
 /* touch: simple pressed feedback, no sticky hover */
 .button:active::before, .header nav a.visit-link:active::before { transform:none; }
 .tl-photo:active::after, .catalog-photo:active::after { opacity:1; }
-.text-link:active, .footer-links a:active, .header nav a:not(.visit-link):active { opacity:.7; }
 @media (prefers-reduced-motion: reduce) {
   .header nav a:not(.visit-link)::after, .footer-links a:not(.back-top)::after, .catalog-body h2::after { transform:none; opacity:0; transition:none; }
   .header nav a[aria-current="page"]::after { opacity:1; }
