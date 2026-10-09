@@ -252,10 +252,10 @@ dialog.is-closing { animation: dialog-out .22s ease forwards; }
 .js-motion .tl-flip .tl-photo.reveal { clip-path: inset(0 0 0 100% round 5px); }
 .js-motion .catalog-item.reveal:nth-child(2) .catalog-photo { --pd: 150ms; }
 .js-motion .about-photo.reveal img, .js-motion .tl-photo.reveal img, .js-motion .catalog-item.reveal .catalog-photo img { scale: 1.12; transition: scale 1.5s var(--ease) var(--pd, 0ms), transform .9s var(--ease), filter .6s var(--ease); }
-.js-motion .about-photo.visible, .js-motion .tl-photo.visible, .js-motion .catalog-item.visible .catalog-photo { clip-path: inset(0 0 0 0 round 5px); }
+.js-motion .about-photo.visible, .js-motion .tl-photo.visible, .js-motion .tl-flip .tl-photo.visible, .js-motion .catalog-item.visible .catalog-photo { clip-path: inset(0 0 0 0 round 5px); }
 .js-motion .about-photo.visible img, .js-motion .tl-photo.visible img, .js-motion .catalog-item.visible .catalog-photo img { scale: none; }
 /* once settled, drop the clip so focus outlines are not cut off */
-.js-motion .about-photo.done, .js-motion .tl-photo.done, .js-motion .catalog-item.done .catalog-photo { clip-path: none; }
+.js-motion .about-photo.done, .js-motion .tl-photo.done, .js-motion .tl-flip .tl-photo.done, .js-motion .catalog-item.done .catalog-photo { clip-path: none; }
 
 /* day icons: line draw-on (pathLength=1), sun rises, moon last */
 @keyframes ic-in { from { opacity: 0; } 35% { opacity: .6; } to { opacity: var(--ic-o); } }
