@@ -15,7 +15,7 @@
 どの案も、ヘッダーの順序とリンク先は共通で、フッターから公開TOPとコンセプト案を行き来できます。コンセプト案にはnoindexを設定しています。
 
 所在地: 〒761-0613 香川県木田郡三木町上高岡２１７１。
-営業時間・Instagramは未定。concept/site-settings.js（公開TOPはsite-settings.js）で設定できます。
+営業時間は未定。Instagram（https://www.instagram.com/cafe.bar_caprice/）は設定済み。どちらも各案の site-settings.js（公開TOPはルートの site-settings.js）で変更できます。
 写真はAIで制作したデモ用イメージで、実店舗・スタッフ・提供メニューの写真ではありません。提供内容・価格は未確定。計測タグは未設定です。
 
 https://nakakun1923.github.io/cafe_demo/
