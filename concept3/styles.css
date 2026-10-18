@@ -434,3 +434,18 @@ dialog.is-closing { animation: dialog-out .22s ease forwards; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- Mobile quick-action bar (injected by app.js) ---------- */
+.action-bar { display: none; }
+@media (max-width: 900px) {
+  .action-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; background: var(--ink); color: var(--on-dark); border-top: 1px solid var(--line-dark); padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 10px rgba(42,31,24,.12); opacity: 0; transform: translateY(100%); visibility: hidden; pointer-events: none; transition: opacity .25s var(--ease), transform .25s var(--ease), visibility 0s linear .25s; }
+  .action-bar.is-visible { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .action-bar a { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; padding: 0 12px; color: var(--on-dark); font-family: var(--serif); font-size: .9375rem; font-weight: 500; letter-spacing: .1em; text-decoration: none; white-space: nowrap; border-radius: var(--radius); -webkit-tap-highlight-color: transparent; transition: background-color .3s var(--ease); }
+  .action-bar a + a { border-left: 1px solid var(--line-dark); border-radius: 0 var(--radius) var(--radius) 0; }
+  .action-bar a:active { background: var(--gold-text); }
+  .action-bar a:focus-visible { outline: 2px solid var(--gold-light); outline-offset: -4px; }
+  .action-bar svg { flex: none; color: var(--gold-light); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .action-bar { transition: none !important; }
+}

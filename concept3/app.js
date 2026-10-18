@@ -185,3 +185,50 @@ if (settings.instagramUrl) {
   } catch { /* Invalid or unset account keeps the preparation state. */ }
 }
 
+
+// Mobile quick-action bar (map + Instagram). Shown once the top block has scrolled away; hidden near the access section, the footer, the mobile nav and dialogs.
+(() => {
+  const topBlock = $('.hero, .menu-intro');
+  const endBlocks = [...document.querySelectorAll('#visit, .footer')];
+  if (!topBlock || !endBlocks.length || !('IntersectionObserver' in window)) return;
+  let instagramHref = '';
+  try {
+    const url = new URL(settings.instagramUrl || '');
+    if (url.protocol === 'https:' && ['instagram.com', 'www.instagram.com'].includes(url.hostname)) instagramHref = url.href;
+  } catch { /* Missing or invalid account: map button only. */ }
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || 'cafe&BAR Caprice')}`;
+  const bar = document.createElement('nav');
+  bar.className = 'action-bar' + (instagramHref ? '' : ' action-bar-single');
+  bar.setAttribute('aria-label', 'すぐに使うリンク');
+  const icon = (paths) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${paths}</svg>`;
+  const pin = icon('<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.400-6.500 11-6.500 11z"/><circle cx="12" cy="10" r="2.300"/>');
+  const insta = icon('<rect x="3.500" y="3.500" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.100" cy="6.900" r=".5"/>');
+  bar.innerHTML = `<a class="action-map" href="${mapHref}" target="_blank" rel="noopener noreferrer">${pin}<span>地図で開く</span></a>`
+    + (instagramHref ? `<a class="action-insta" href="${instagramHref}" target="_blank" rel="noopener noreferrer">${insta}<span>Instagram</span></a>` : '');
+  document.body.append(bar);
+
+  let topGone = false;
+  const endVisible = new Set();
+  const update = () => {
+    const blocked = endVisible.size > 0 || navToggle.getAttribute('aria-expanded') === 'true' || document.body.classList.contains('modal-open') || dialog.open;
+    const show = topGone && !blocked;
+    bar.classList.toggle('is-visible', show);
+    bar.toggleAttribute('inert', !show);
+    bar.setAttribute('aria-hidden', String(!show));
+    bar.querySelectorAll('a').forEach((link) => { if (show) link.removeAttribute('tabindex'); else link.tabIndex = -1; });
+  };
+  update();
+  new IntersectionObserver((entries) => {
+    const entry = entries[entries.length - 1];
+    topGone = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
+    update();
+  }).observe(topBlock);
+  const endObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { if (entry.isIntersecting) endVisible.add(entry.target); else endVisible.delete(entry.target); });
+    update();
+  });
+  endBlocks.forEach((element) => endObserver.observe(element));
+  new MutationObserver(update).observe(navToggle, { attributes: true, attributeFilter: ['aria-expanded'] });
+  new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  dialog.addEventListener('close', update);
+})();
