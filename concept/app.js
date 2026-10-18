@@ -1,4 +1,6 @@
 const $ = (selector) => document.querySelector(selector);
+// Wrap each phrase (separated by "|") in a no-break span so Japanese text only wraps at phrase boundaries.
+const phrases = (text) => text.split('|').map((part) => `<span class="nw">${part}</span>`).join('');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const navToggle = $('.nav-toggle');
 const navigation = $('#navigation');
@@ -24,7 +26,9 @@ document.addEventListener('click', (event) => {
   if (!link || link.target || link.hasAttribute('download')) return;
   const destination = new URL(link.href);
   if (!destination.hash || !isCurrentDocument(destination)) return;
-  if (!document.getElementById(decodeURIComponent(destination.hash.slice(1)))) return;
+  let targetId;
+  try { targetId = decodeURIComponent(destination.hash.slice(1)); } catch { return; }
+  if (!document.getElementById(targetId)) return;
   event.preventDefault();
   if (location.hash !== destination.hash) history.pushState(null, '', destination.hash);
   focusSection(destination.hash, true);
@@ -49,92 +53,6 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-const hero = $('.hero');
-const slides = [...document.querySelectorAll('.hero-image')];
-const heroLabels = ['テーブルを囲んで会話を楽しむ人たちのイメージ', '主菜と野菜、ごはん、汁物を並べたランチのイメージ', '木のテーブルと落ち着いた色の椅子が並ぶ店内イメージ'];
-const pause = $('#hero-pause');
-const progress = $('#hero-progress');
-let slideIndex = 0;
-let autoplay = !reducedMotion.matches;
-let timer;
-let heroVisible = true;
-let hovering = false;
-let focusWithin = false;
-function scheduleSlide() {
-  if (!hero) return;
-  clearTimeout(timer);
-  progress.classList.remove('playing');
-  // Reset the progress clock together with the slide timer, including after tab changes.
-  void progress.offsetWidth;
-  if (autoplay && heroVisible && !hovering && !focusWithin && !document.hidden && !document.querySelector('dialog[open]')) {
-    progress.classList.add('playing');
-    timer = setTimeout(() => changeSlide(1), 8500);
-  }
-}
-function updatePause() {
-  pause.setAttribute('aria-label', autoplay ? 'スライドの自動再生を停止' : 'スライドの自動再生を開始');
-  pause.firstElementChild.textContent = autoplay ? 'Ⅱ' : '▷';
-}
-function changeSlide(direction, announce = false) {
-  slideIndex = (slideIndex + direction + slides.length) % slides.length;
-  slides.forEach((slide, index) => slide.classList.toggle('active', index === slideIndex));
-  $('#hero-count').innerHTML = `0${slideIndex + 1} <span class="muted">/ 03</span>`;
-  if (announce) $('#hero-status').textContent = `${slideIndex + 1} / 3：${heroLabels[slideIndex]}`;
-  scheduleSlide();
-}
-if (hero) {
-$('#hero-prev').addEventListener('click', () => changeSlide(-1, true));
-$('#hero-next').addEventListener('click', () => changeSlide(1, true));
-pause.addEventListener('click', () => { autoplay = !autoplay; updatePause(); scheduleSlide(); });
-hero.addEventListener('mouseenter', () => { hovering = true; scheduleSlide(); });
-hero.addEventListener('mouseleave', () => { hovering = false; scheduleSlide(); });
-hero.addEventListener('focusin', () => { focusWithin = true; scheduleSlide(); });
-hero.addEventListener('focusout', (event) => {
-  if (!hero.contains(event.relatedTarget)) { focusWithin = false; scheduleSlide(); }
-});
-document.addEventListener('visibilitychange', scheduleSlide);
-reducedMotion.addEventListener('change', () => { autoplay = !reducedMotion.matches; updatePause(); scheduleSlide(); });
-new IntersectionObserver(([entry]) => { heroVisible = entry.isIntersecting; scheduleSlide(); }).observe(hero);
-updatePause();
-scheduleSlide();
-}
-
-const picks = [
-  { label: 'EVERYDAY MEAL', title: 'ちゃんと食べて、\nほっとする。', description: '栄養のバランスにも、お財布にも気を配って。日々の食事として選びやすいごはんを目指しています。', tag: 'DAILY LUNCH / イメージ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', detail: 'lunch' },
-  { label: 'YOUR LITTLE BREAK', title: 'ひと息の、\nいつもの一杯。', description: 'ひとりで気持ちをゆるめる時間にも、同僚と話す時間にも。日々のひと休みに寄り添う一杯を。', tag: 'COFFEE BREAK / イメージ', image: 'coffee', alt: '陶器のカップに注がれたコーヒーのイメージ', detail: 'coffee' },
-  { label: 'A LITTLE SWEET', title: '午後に、\n小さな甘い時間。', description: '仕事の合間も、なんでもない日も。少し甘いものと一緒に、肩の力を抜くひと休みを。', tag: 'SWEET MOMENT / イメージ', image: 'cheesecake', alt: '焼き色のついたチーズケーキのイメージ', detail: 'cheesecake' },
-];
-let pickIndex = 0;
-let pickTransition = 0;
-async function changePick(direction) {
-  pickIndex = (pickIndex + direction + picks.length) % picks.length;
-  const pick = picks[pickIndex];
-  const transition = ++pickTransition;
-  const visual = $('.pickup-visual');
-  const text = $('#pickup-text');
-  const nextImage = new Image();
-  nextImage.src = `../assets/${pick.image}.jpg`;
-  if (!reducedMotion.matches) {
-    visual?.classList.add('is-changing'); text?.classList.add('is-changing');
-    await Promise.all([
-      new Promise((resolve) => setTimeout(resolve, 280)),
-      Promise.race([nextImage.decode().catch(() => {}), new Promise((resolve) => setTimeout(resolve, 1500))]),
-    ]);
-  }
-  if (transition !== pickTransition) return;
-  $('#pickup-image').src = `../assets/${pick.image}.jpg`;
-  $('#pickup-image').alt = pick.alt;
-  $('#pickup-label').textContent = pick.label;
-  $('#pickup-title').textContent = pick.title;
-  $('#pickup-description').textContent = pick.description;
-  $('#pickup-tag').textContent = pick.tag;
-  $('#pickup-detail').dataset.detail = pick.detail;
-  $('#pickup-count').innerHTML = `0${pickIndex + 1} <span class="muted">— 03</span>`;
-  $('#pickup-count').setAttribute('aria-label', `3件中${pickIndex + 1}件目`);
-  requestAnimationFrame(() => { visual?.classList.remove('is-changing'); text?.classList.remove('is-changing'); });
-}
-$('#pickup-prev')?.addEventListener('click', () => changePick(-1));
-$('#pickup-next')?.addEventListener('click', () => changePick(1));
 function enableSwipe(element, callback) {
   if (!element) return;
   let start = null;
@@ -150,13 +68,11 @@ function enableSwipe(element, callback) {
   }, { passive: true });
   element.addEventListener('touchcancel', () => { start = null; }, { passive: true });
 }
-enableSwipe(hero, (direction) => changeSlide(direction, true));
-enableSwipe($('.pickup-visual'), changePick);
 
 const products = {
-  lunch: { title: '日替わりごはん', label: 'LUNCH', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と野菜の副菜、ごはん、汁物を並べたプレートは、私たちが目指す日々のごはんのイメージです。適度にお腹を満たせて、栄養のバランスにも、お財布にも気を配る。「近くにちょうどいいお店があって助かる」と思ってもらえるごはんを目指しています。' },
-  coffee: { title: 'コーヒー', label: 'COFFEE', image: 'coffee', alt: '陶器のカップに注がれたコーヒーのイメージ', description: 'ひとりで気持ちをゆるめる時間にも、同僚と話す時間にも。日々のひと休みに寄り添う一杯をイメージしました。具体的な豆や淹れ方、提供内容は準備中です。' },
-  cheesecake: { title: 'チーズケーキ', label: 'SWEETS', image: 'cheesecake', alt: '焼き色のついたチーズケーキのイメージ', description: '少し甘いものと一緒に、肩の力を抜くひと休みを。写真は、気楽に過ごす午後の時間をイメージしたものです。実際のスイーツの種類や提供内容は、決まり次第ご案内します。' },
+  lunch: { title: 'ひるごはん', label: 'ランチ', image: 'lunch', alt: '主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ', description: '主菜と野菜の|副菜、|ごはん、|汁物を|並べたお盆は、|私たちが|目指す|日々の|ごはんの|イメージです。|適度に|お腹を|満たせて、|栄養の|バランスにも、|お財布にも|気を配る。|「近くに|ちょうどいい|お店があって|助かる」と|思って|もらえる|ごはんを|目指しています。' },
+  coffee: { title: 'ひと息・コーヒー', label: 'コーヒー', image: 'coffee', alt: '湯気の立つコーヒーを白いカップで出した、カフェの席のイメージ', description: 'ひとりで|気持ちを|ゆるめる時間にも、|同僚と|話す時間にも。|日々の|ひと息に|寄り添う|一杯を|イメージしました。' },
+  cheesecake: { title: 'スイーツ', label: 'スイーツ', image: 'cheesecake', alt: '焼き色のついたチーズケーキの一切れとフォークのイメージ', description: '少し甘いものと|一緒に、|肩の力を|抜く|ひと休みを。|気楽に|過ごす|午後の|時間を|イメージした|写真です。' },
 };
 function closeDialog(target) {
   if (!target?.open || target.classList.contains('is-closing')) return;
@@ -184,16 +100,15 @@ const dialogContent = $('#dialog-content');
 let opener = null;
 function showDetail(key) {
   if (!dialog.open) opener = document.activeElement;
-  const note = '<p class="detail-note">写真・メニューはデモ用のイメージです。実際の提供内容・価格・食材やアレルギーに関する情報は未確定です。</p>';
+  const note = `<p class="detail-note">${phrases('写真は|イメージです。|提供内容は|決まり次第|お知らせします。')}</p>`;
   if (products[key]) {
     const product = products[key];
-    dialogContent.innerHTML = `<img class="detail-photo" src="../assets/${product.image}.jpg" alt="${product.alt}"><div class="detail-body"><p class="eyebrow">${product.label}</p><h2 id="dialog-title">${product.title}</h2><p>${product.description}</p>${note}</div>`;
+    dialogContent.innerHTML = `<img class="detail-photo" src="../assets/${product.image}.jpg" alt="${product.alt}"><div class="detail-body"><p class="label">${product.label}</p><h2 id="dialog-title">${product.title}</h2><p>${phrases(product.description)}</p>${note}</div>`;
   } else return;
   if (!dialog.open) dialog.showModal();
   dialog.scrollTop = 0;
   document.body.classList.add('modal-open');
   $('.dialog-close').focus();
-  scheduleSlide();
 }
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-detail]');
@@ -207,7 +122,6 @@ dialog.addEventListener('click', (event) => {
 dialog.addEventListener('close', () => {
   document.body.classList.remove('modal-open');
   if (opener?.isConnected) opener.focus();
-  scheduleSlide();
 });
 
 if (!reducedMotion.matches && 'IntersectionObserver' in window) {
@@ -220,23 +134,10 @@ if (!reducedMotion.matches && 'IntersectionObserver' in window) {
   document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
 }
 
-// Menu page filtering keeps the initial HTML useful even without JavaScript.
-const categoryButtons = [...document.querySelectorAll('[data-category]')];
-const catalogItems = [...document.querySelectorAll('[data-product-category]')];
-categoryButtons.forEach((button) => button.addEventListener('click', () => {
-  const category = button.dataset.category;
-  categoryButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-  catalogItems.forEach((item) => { item.hidden = category !== 'all' && item.dataset.productCategory !== category; });
-  $('#catalog-count').textContent = `${catalogItems.filter((item) => !item.hidden).length}件のメニューイメージ`;
-}));
-
-const galleryTrack = $('#gallery-track');
-if (galleryTrack) {
-  const galleryButtons = [...galleryTrack.querySelectorAll('[data-gallery]')];
+const galleryButtons = [...document.querySelectorAll('[data-gallery]')];
+if (galleryButtons.length) {
   const galleryDialog = $('#gallery-dialog');
   const galleryImage = $('#gallery-full-image');
-  const left = $('#gallery-scroll-prev');
-  const right = $('#gallery-scroll-next');
   let galleryIndex = 0;
   let galleryOpener;
   let galleryTransition = 0;
@@ -257,24 +158,16 @@ if (galleryTrack) {
     galleryImage.src = photo.src;
     galleryImage.alt = photo.alt;
     $('#gallery-counter').textContent = `${String(galleryIndex + 1).padStart(2, '0')} / ${String(galleryButtons.length).padStart(2, '0')}`;
-    $('#gallery-full-caption').textContent = photo.alt;
+    const captionSource = galleryButtons[galleryIndex].querySelector('.gallery-caption');
+    if (captionSource) $('#gallery-full-caption').innerHTML = captionSource.innerHTML; else $('#gallery-full-caption').textContent = photo.alt;
     requestAnimationFrame(() => galleryImage.classList.remove('is-changing'));
   }
-  function updateGalleryArrows() {
-    left.disabled = galleryTrack.scrollLeft < 2;
-    right.disabled = galleryTrack.scrollLeft + galleryTrack.clientWidth >= galleryTrack.scrollWidth - 2;
-  }
-  left.addEventListener('click', () => galleryTrack.scrollBy({ left: -galleryTrack.clientWidth, behavior: reducedMotion.matches ? 'instant' : 'smooth' }));
-  right.addEventListener('click', () => galleryTrack.scrollBy({ left: galleryTrack.clientWidth, behavior: reducedMotion.matches ? 'instant' : 'smooth' }));
-  galleryTrack.addEventListener('scroll', updateGalleryArrows, { passive: true });
-  new ResizeObserver(updateGalleryArrows).observe(galleryTrack);
   galleryButtons.forEach((button, index) => button.addEventListener('click', () => {
     galleryOpener = button;
     setGalleryPhoto(index);
     galleryDialog.showModal();
     document.body.classList.add('modal-open');
     $('#gallery-close').focus();
-    scheduleSlide();
   }));
   $('#gallery-prev').addEventListener('click', () => setGalleryPhoto(galleryIndex - 1));
   $('#gallery-next').addEventListener('click', () => setGalleryPhoto(galleryIndex + 1));
@@ -292,22 +185,32 @@ if (galleryTrack) {
   galleryDialog.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
     galleryOpener?.focus();
-    scheduleSlide();
   });
   enableSwipe(galleryImage, (direction) => setGalleryPhoto(galleryIndex + direction));
-  updateGalleryArrows();
 }
 
 const settings = window.CAPRICE_SETTINGS || {};
-if (settings.address) document.querySelectorAll('[data-address]').forEach((element) => { element.textContent = settings.address; });
+// Keep the postal code and each address part unbroken so a line never splits mid-word.
+function renderAddress(element, address) {
+  const match = address.trim().match(/^(〒\s*[\d０-９-－]+)?\s*(.*)$/);
+  const parts = match[2].match(/.+?[都道府県郡市区町村]|.+$/g) || [];
+  element.replaceChildren();
+  const add = (text, className) => {
+    const span = document.createElement('span'); span.className = className; span.textContent = text; element.append(span);
+  };
+  if (match[1]) add(match[1].replace(/\s+/g, ''), 'addr-zip');
+  parts.forEach((part) => add(part, 'addr-part'));
+}
+if (settings.address) document.querySelectorAll('[data-address]').forEach((element) => renderAddress(element, settings.address));
 if (settings.hours) document.querySelectorAll('[data-hours]').forEach((element) => { element.textContent = settings.hours; });
 const map = $('#access-map');
 if (map && settings.mapEmbedUrl) {
   if (map.src !== settings.mapEmbedUrl) map.src = settings.mapEmbedUrl;
   if (!settings.mapIsPlaceholder) {
     map.title = 'cafe&BAR Caprice アクセスマップ';
-    $('.map-note').textContent = '地図は指定住所をもとに表示しています。';
-    $('.map-fallback a').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || 'cafe&BAR Caprice')}`;
+    const mapNote = $('.map-note'); if (mapNote) mapNote.innerHTML = phrases('地図は|指定住所を|もとに|表示しています。');
+    const fallbackLink = $('.map-fallback a');
+    if (fallbackLink) fallbackLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || 'cafe&BAR Caprice')}`;
   }
 }
 if (settings.instagramUrl) {
@@ -318,9 +221,122 @@ if (settings.instagramUrl) {
         link.href = url.href; link.target = '_blank'; link.rel = 'noopener noreferrer';
         link.removeAttribute('aria-disabled'); link.textContent = 'Instagramを見る ↗';
       });
-      const message = $('.instagram-action p');
-      if (message) message.textContent = '新しいタブでInstagramを開きます。';
     }
-  } catch { /* Invalid or unset account keeps the clearly labeled preparation state. */ }
+  } catch { /* Invalid or unset account keeps the preparation state. */ }
 }
 
+/* ---------- Color themes (comparison tool) ---------- */
+const THEMES = [
+  { id: 'kissa', name: '喫茶', accent: '#4F6A55', paper: '#F3EBDD' },
+  { id: 'terracotta', name: 'テラコッタ', accent: '#B5532F', paper: '#FBF8F2' },
+  { id: 'sage', name: 'セージ', accent: '#4F7036', paper: '#F8FAF4' },
+  { id: 'indigo', name: '藍', accent: '#2B4C8C', paper: '#FAFBFD' },
+  { id: 'mustard', name: 'からし', accent: '#E3A71F', paper: '#FFFBF0' },
+  { id: 'sakura', name: 'さくら', accent: '#B04F64', paper: '#FFF9F8' },
+  { id: 'sky', name: 'そら', accent: '#2A78AD', paper: '#F9FCFE' },
+];
+const THEME_KEY = 'concept-theme';
+const themeById = (id) => THEMES.find((theme) => theme.id === id);
+const readUrlTheme = () => { try { return new URLSearchParams(location.search).get('theme'); } catch { return null; } };
+const readStoredTheme = () => { try { return localStorage.getItem(THEME_KEY); } catch { return null; } };
+let currentTheme = themeById(readUrlTheme()) || themeById(readStoredTheme()) || THEMES[0];
+
+function faviconFor(theme) {
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='10' fill='${theme.accent}'/><path d='M9 13h19v12a7 7 0 0 1-7 7h-5a7 7 0 0 1-7-7zm19 2h3a5 5 0 0 1 0 10h-3' fill='none' stroke='${theme.paper}' stroke-width='3'/></svg>`)}`;
+}
+function withThemeParam(href, theme) {
+  const url = new URL(href, location.href);
+  url.searchParams.set('theme', theme.id);
+  return url;
+}
+function syncLinks() {
+  if (!readUrlTheme()) return;
+  document.querySelectorAll('a[href]').forEach((link) => {
+    const raw = link.getAttribute('href');
+    if (!/^(index\.html|menu\.html)(#|\?|$)/.test(raw)) return;
+    const url = withThemeParam(raw, currentTheme);
+    link.setAttribute('href', `${raw.split(/[?#]/)[0]}?theme=${currentTheme.id}${url.hash}`);
+  });
+}
+function applyTheme(theme, { persist = false, animate = false } = {}) {
+  const root = document.documentElement;
+  if (animate && !reducedMotion.matches) {
+    root.classList.add('theme-fade');
+    clearTimeout(applyTheme.timer);
+    applyTheme.timer = setTimeout(() => root.classList.remove('theme-fade'), 300);
+  }
+  currentTheme = theme;
+  root.dataset.theme = theme.id;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme.paper;
+  const icon = document.querySelector('link[rel="icon"]');
+  if (icon) icon.href = faviconFor(theme);
+  if (persist) {
+    try { localStorage.setItem(THEME_KEY, theme.id); } catch { /* storage unavailable */ }
+    try {
+      const url = withThemeParam(location.href, theme);
+      history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+    } catch { /* ignore */ }
+  }
+  syncLinks();
+}
+applyTheme(currentTheme);
+
+function buildSwitcher() {
+  const root = document.createElement('div');
+  root.className = 'theme-switcher';
+  root.innerHTML = `<div class="theme-panel" id="theme-panel" hidden><p class="theme-panel-title">カラーを比べる</p><div class="theme-options" role="radiogroup" aria-label="カラーテーマ"></div></div>` +
+    `<button type="button" class="theme-toggle" aria-expanded="false" aria-controls="theme-panel"><span class="swatch" aria-hidden="true"></span><span class="theme-toggle-label">カラー</span></button>`;
+  const toggle = root.querySelector('.theme-toggle');
+  const panel = root.querySelector('.theme-panel');
+  const group = root.querySelector('.theme-options');
+  const setSwatch = (el, theme) => { el.style.setProperty('--sw-a', theme.accent); el.style.setProperty('--sw-p', theme.paper); };
+  const options = THEMES.map((theme) => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'theme-option'; button.setAttribute('role', 'radio'); button.dataset.theme = theme.id;
+    button.innerHTML = '<span class="swatch" aria-hidden="true"></span><span class="theme-name"></span>';
+    button.querySelector('.theme-name').textContent = theme.name;
+    setSwatch(button.querySelector('.swatch'), theme);
+    group.append(button);
+    return button;
+  });
+  const refresh = () => {
+    options.forEach((button) => {
+      const on = button.dataset.theme === currentTheme.id;
+      button.setAttribute('aria-checked', String(on));
+      button.tabIndex = on ? 0 : -1;
+    });
+    setSwatch(toggle.querySelector('.swatch'), currentTheme);
+    toggle.setAttribute('aria-label', `カラー(現在: ${currentTheme.name})`);
+  };
+  const choose = (index, focus = true) => {
+    const next = (index + THEMES.length) % THEMES.length;
+    applyTheme(THEMES[next], { persist: true, animate: true });
+    refresh();
+    if (focus) options[next].focus();
+  };
+  const setOpen = (open, returnFocus = false) => {
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) options.find((button) => button.tabIndex === 0).focus();
+    else if (returnFocus) toggle.focus();
+  };
+  toggle.addEventListener('click', () => setOpen(panel.hidden));
+  options.forEach((button, index) => {
+    button.addEventListener('click', () => choose(index));
+    button.addEventListener('keydown', (event) => {
+      const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      if (event.key in keys) { event.preventDefault(); choose(index + keys[event.key]); }
+      else if (event.key === 'Home') { event.preventDefault(); choose(0); }
+      else if (event.key === 'End') { event.preventDefault(); choose(THEMES.length - 1); }
+    });
+  });
+  root.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !panel.hidden) { event.stopPropagation(); setOpen(false, true); }
+  });
+  document.addEventListener('click', (event) => { if (!panel.hidden && !root.contains(event.target)) setOpen(false); });
+  refresh();
+  document.body.append(root);
+  document.body.classList.add('has-theme-switcher');
+}
+buildSwitcher();
