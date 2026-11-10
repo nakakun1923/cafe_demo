@@ -257,6 +257,29 @@ img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
   .chapter-afternoon .chapter-copy { order: 3; }
 }
 
+/* スクロール演出（app.js が .is-tinted を付けたときだけ有効）
+   - 背景は章ごとに切り替えず、スクロールに合わせて ひる → ごご → よる へ移り変わる
+   - PCでは縦書きの時間帯ラベルが画面に残り、いまどの章かを示す */
+.day.is-tinted { background-color: var(--day-bg, var(--paper)); transition: color 0.4s; }
+.day.is-tinted.is-night { color: var(--night-ink); }
+.day.is-tinted .chapter { background: transparent; color: inherit; }
+.day.is-tinted .chapter-time { color: currentColor; opacity: 0.13; }
+.day-clock { display: none; }
+@media (min-width: 861px) {
+  .day.is-tinted .chapter-time { visibility: hidden; }
+  .day.is-tinted .day-clock {
+    --clock-size: clamp(4rem, 9vw, 8rem);
+    display: block; position: sticky; z-index: 1;
+    top: calc(var(--header) + 14vh);
+    height: calc(var(--clock-size) * 2.2); margin-bottom: calc(var(--clock-size) * -2.2);
+    padding-left: var(--gutter); pointer-events: none;
+    writing-mode: vertical-rl;
+    font: 700 var(--clock-size)/1 var(--maru); letter-spacing: 0.08em;
+    opacity: 0.13; transition: opacity 0.3s;
+  }
+  .day.is-tinted .day-clock.is-changing { opacity: 0; }
+}
+
 /* 5-5. 行き方：地図と来店情報は、明るい地で読みやすく */
 .visit {
   display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);

@@ -38,6 +38,59 @@ if (dialog) {
   dialog.addEventListener('close', () => { if (opener?.isConnected) opener.focus(); });
 }
 
+/* ---- Capriceの一日：スクロールに合わせて日が暮れていく ----
+   「動きを減らす」設定の端末では何もしません（章ごとの背景色のまま表示）。 */
+const day = $('.day');
+const chapters = $$('.chapter', day || document);
+const calm = matchMedia('(prefers-reduced-motion: reduce)');
+if (day && chapters.length === 3 && !calm.matches) {
+  const tones = [[246, 248, 241], [244, 233, 210], [24, 34, 46]]; // ひる・ごご・よる の地色
+  const dusk = [216, 162, 120]; // ごご→よる の途中で通る夕焼け色（灰色に濁らせないため）
+  const names = ['ひる', 'ごご', 'よる'];
+  const mix = (from, to, t) => from.map((value, i) => Math.round(value + (to[i] - value) * t));
+  const ease = (t) => t * t * (3 - 2 * t);
+
+  const clock = document.createElement('p');
+  clock.className = 'day-clock';
+  clock.setAttribute('aria-hidden', 'true');
+  clock.textContent = names[0];
+  chapters[0].before(clock);
+  day.classList.add('is-tinted');
+
+  let current = 0;
+  let queued = false;
+  function update() {
+    queued = false;
+    const viewport = innerHeight;
+    const band = viewport * 0.6; // この高さをかけて、次の章の色へ移る
+    let tone = tones[0];
+    let active = 0;
+    let nightness = 0;
+    for (let i = 1; i < chapters.length; i += 1) {
+      const top = chapters[i].getBoundingClientRect().top;
+      const t = ease(Math.min(1, Math.max(0, (viewport * 0.55 - top + band / 2) / band)));
+      if (i === 2) {
+        tone = t < 0.5 ? mix(tone, dusk, t * 2) : mix(dusk, tones[2], t * 2 - 1);
+        nightness = t;
+      } else {
+        tone = mix(tone, tones[i], t);
+      }
+      if (t > 0.5) active = i;
+    }
+    day.style.setProperty('--day-bg', `rgb(${tone.join(' ')})`);
+    day.classList.toggle('is-night', nightness > 0.7); // 地が十分暗くなってから文字を白に
+    if (active !== current) {
+      current = active;
+      clock.classList.add('is-changing');
+      setTimeout(() => { clock.textContent = names[current]; clock.classList.remove('is-changing'); }, 300);
+    }
+  }
+  const request = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', request, { passive: true });
+  addEventListener('resize', request);
+  update();
+}
+
 /* ---- site-settings.js の内容を反映 ---- */
 const settings = window.CAPRICE_SETTINGS || {};
 const fill = (key, value) => {
