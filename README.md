@@ -4,6 +4,7 @@
 
 - 公開TOP・メニュー: index.html / menu.html。以前のデザイン・写真・文章を維持しています。
 - コンセプト案: concept/index.html / concept/menu.html。既存UIに、地域のいつもの居場所を目指す文章と、ランチ・店内・人が集まる写真を反映しています。
+- ブラッシュアップ案: refined/index.html / refined/menu.html。コンセプト案の言葉を軸に、配色・書体・構成を作り直した案です。ひる・ごご・よるの順に一日をたどる構成で、営業時間・定休日・駐車場・電話・Instagramは refined/site-settings.js で設定できます（空欄は「準備中」と表示）。
 
 両案で、住所重複の解消、PCのOUR CAFE写真の左端揃え、詳細を開く写真の拡大アイコンと緩やかなズーム、モーダルのフェード表示・終了、スライダーの緩やかな切り替えに対応しています。動きを減らすOS設定を尊重します。
 ヘッダーの順序・リンク先は各案で統一。メニューのみ別ページです。フッターから公開TOPとコンセプト案を行き来できます。比較案にはnoindexを設定しています。
@@ -14,3 +15,4 @@
 
 https://nakakun1923.github.io/cafe_demo/
 https://nakakun1923.github.io/cafe_demo/concept/index.html
+https://nakakun1923.github.io/cafe_demo/refined/index.html
