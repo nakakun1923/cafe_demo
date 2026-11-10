@@ -16,7 +16,7 @@
   --afternoon: #f4e9d2;  /* ごごの地 */
   --night: #18222e;      /* よるの地 */
   --night-ink: #eef1f4;
-  --lamp: #ecbb76;       /* よるの灯り */
+  --lamp: #ecbb76;       /* よるの灯り（下線・枠） */
   --line: rgb(31 43 36 / 16%);
 
   /* 書体 */
@@ -78,8 +78,6 @@ h1, h2, h3 { font-family: var(--maru); font-weight: 500; line-height: 1.5; lette
   transition: background-color 0.2s;
 }
 .button:hover { background: #45572f; }
-.button-lamp { background: var(--lamp); color: var(--night); }
-.button-lamp:hover { background: #f5cd93; }
 
 .link {
   font-weight: 500;
@@ -251,7 +249,7 @@ img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
 .chapter-night .chapter-time { color: #26364a; }
 .chapter-night .chapter-photo img { filter: brightness(0.62) saturate(0.9); }
 .chapter-night .link { text-decoration-color: var(--lamp); }
-.chapter-night :focus-visible, .visit :focus-visible { outline-color: var(--lamp); }
+.chapter-night :focus-visible { outline-color: var(--lamp); }
 
 @media (max-width: 860px) {
   .chapter, .chapter-afternoon { grid-template-columns: 1fr; gap: 24px; }
@@ -259,22 +257,21 @@ img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
   .chapter-afternoon .chapter-copy { order: 3; }
 }
 
-/* 5-5. 行き方：よるの続きの色で、ページを締める */
+/* 5-5. 行き方：地図と来店情報は、明るい地で読みやすく */
 .visit {
   display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: clamp(32px, 5vw, 80px); align-items: start;
-  padding: clamp(24px, 4vw, 48px) var(--gutter) var(--section);
-  background: var(--night); color: var(--night-ink);
+  padding: var(--section) var(--gutter);
 }
 .visit h2 { font-size: var(--title-m); margin-bottom: 20px; }
 .visit-facts > div {
   display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 12px;
-  padding: 14px 0; border-bottom: 1px solid rgb(238 241 244 / 18%);
+  padding: 14px 0; border-bottom: 1px solid var(--line);
 }
-.visit-facts dt { color: #a9b4c0; }
-.visit-facts a { text-decoration-color: var(--lamp); text-underline-offset: 5px; }
+.visit-facts dt { color: var(--ink-soft); }
+.visit-facts a { text-decoration-color: var(--wood); text-decoration-thickness: 2px; text-underline-offset: 5px; }
 .visit .button { margin-top: 32px; }
-.visit-map { border-radius: var(--radius); overflow: hidden; background: #26364a; }
+.visit-map { border-radius: var(--radius); overflow: hidden; background: var(--leaf-soft); }
 .visit-map iframe { display: block; width: 100%; aspect-ratio: 4 / 3; border: 0; }
 @media (max-width: 860px) {
   .visit { grid-template-columns: 1fr; }
