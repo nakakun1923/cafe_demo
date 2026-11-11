@@ -130,8 +130,11 @@ if (settings.instagramUrl) {
         link.textContent = handle ? `@${handle}` : 'Instagramを見る';
         element.replaceChildren(link);
       });
-      // 行き方の下のリンクと、スマホの近道にも出す
+      // Instagramの帯と、スマホの近道にも出す
+      const handle = url.pathname.split('/').filter(Boolean)[0];
       $$('[data-instagram-link]').forEach((link) => { link.href = url.href; link.hidden = false; });
+      $$('[data-instagram-handle]').forEach((element) => { element.textContent = handle ? `@${handle}` : ''; });
+      $$('[data-instagram-pending]').forEach((element) => { element.hidden = true; });
     }
   } catch { /* 不正なURLのときは「準備中」のまま */ }
 }
