@@ -6,4 +6,6 @@ window.CAPRICE_SETTINGS = {
   parking: '',      // 例: '店舗前に8台'
   phone: '',        // 例: '087-000-0000'
   instagramUrl: 'https://www.instagram.com/cafe.bar_caprice/',
+  mapUrl: 'https://maps.app.goo.gl/Vgrr5Rz76EheiTUi8', // 「Google マップで開く」の行き先（お店のページ）
+  mapQuery: 'cafe&BAR Caprice 〒761-0613 香川県木田郡三木町上高岡２１７１', // 埋め込み地図の検索語。空欄なら所在地を使います
 };

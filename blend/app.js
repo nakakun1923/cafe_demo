@@ -136,11 +136,18 @@ if (settings.instagramUrl) {
   } catch { /* 不正なURLのときは「準備中」のまま */ }
 }
 
-if (settings.address) {
-  const query = encodeURIComponent(settings.address);
+// 地図：お店のページ（mapUrl）と検索語（mapQuery）があればそれを、なければ所在地を使う
+const mapHosts = ['maps.app.goo.gl', 'goo.gl', 'www.google.com', 'google.com', 'maps.google.com', 'www.google.co.jp'];
+let placeUrl = '';
+try {
+  const url = new URL(settings.mapUrl || '');
+  if (url.protocol === 'https:' && mapHosts.includes(url.hostname)) placeUrl = url.href;
+} catch { /* 空欄や不正なURLのときは、所在地での検索に戻す */ }
+if (settings.mapQuery || settings.address) {
+  const query = encodeURIComponent(settings.mapQuery || settings.address);
   const map = $('#map');
   const embed = `https://maps.google.com/maps?q=${query}&output=embed`;
   if (map && map.getAttribute('src') !== embed) map.src = embed;
   const mapLink = $('#map-link');
-  if (mapLink) mapLink.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
+  if (mapLink) mapLink.href = placeUrl || `https://www.google.com/maps/search/?api=1&query=${query}`;
 }
