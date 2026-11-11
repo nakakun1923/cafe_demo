@@ -160,16 +160,17 @@ img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
 .visit-facts dt { color: var(--sub); font-size: .875rem; font-weight: 700; line-height: 2.05; } .visit-facts dd { font-weight: 700; }
 .visit-facts a { text-decoration-color: var(--warm); text-decoration-thickness: 2px; text-underline-offset: 5px; }
 .visit .button { margin-top: 28px; }
+.visit-more { margin-top: 20px; }
 .visit-map { border-radius: var(--radius-lg); overflow: hidden; background: var(--wash); }
 .visit-map iframe { display: block; width: 100%; aspect-ratio: 4 / 3; border: 0; }
-@media (max-width: 860px) { .visit { grid-template-columns: 1fr; } .visit .button { width: 100%; } }
+@media (max-width: 860px) { .visit { grid-template-columns: 1fr; } .visit .button { width: 100%; } .visit-more { text-align: center; } }
 
 /* 4-6. スマホの下に浮かぶ近道（コンセプト案3の固定バーを、丸い形で） */
 .quickbar { display: none; }
 @media (max-width: 760px) {
-  .quickbar { position: fixed; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); z-index: 25; display: flex; gap: 4px; padding: 5px; border-radius: var(--radius-pill); background: var(--ink); box-shadow: 0 14px 34px rgba(36, 26, 18, .32); transform: translate(-50%, 90px); opacity: 0; transition: transform .5s var(--ease), opacity .3s; }
-  .quickbar.is-shown { transform: translateX(-50%); opacity: 1; }
-  .quickbar a { display: grid; place-items: center; min-width: 104px; height: 44px; padding: 0 18px; border-radius: var(--radius-pill); color: var(--on-ink); font-size: .9375rem; font-weight: 700; text-decoration: none; }
+  .quickbar { position: fixed; left: 0; right: 0; width: max-content; margin-inline: auto; bottom: max(14px, env(safe-area-inset-bottom)); z-index: 25; display: flex; gap: 4px; padding: 5px; border-radius: var(--radius-pill); background: var(--ink); box-shadow: 0 14px 34px rgba(36, 26, 18, .32); transform: translateY(90px); opacity: 0; transition: transform .5s var(--ease), opacity .3s; }
+  .quickbar.is-shown { transform: none; opacity: 1; }
+  .quickbar a { display: grid; place-items: center; min-width: 84px; height: 44px; padding: 0 16px; border-radius: var(--radius-pill); color: var(--on-ink); font-size: .9375rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
   .quickbar a:first-child { background: var(--warm); color: var(--ink); }
   .site-footer { padding-bottom: 96px; }
 }

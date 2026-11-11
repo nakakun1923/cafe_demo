@@ -5,5 +5,5 @@ window.CAPRICE_SETTINGS = {
   closed: '',       // 例: '水曜日'
   parking: '',      // 例: '店舗前に8台'
   phone: '',        // 例: '087-000-0000'
-  instagramUrl: '', // 例: 'https://www.instagram.com/アカウント名/'
+  instagramUrl: 'https://www.instagram.com/cafe.bar_caprice/',
 };

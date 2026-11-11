@@ -126,9 +126,12 @@ if (settings.instagramUrl) {
       $$('[data-setting="instagram"]').forEach((element) => {
         const link = document.createElement('a');
         link.href = url.href; link.target = '_blank'; link.rel = 'noopener noreferrer';
-        link.textContent = 'Instagramを見る';
+        const handle = url.pathname.split('/').filter(Boolean)[0];
+        link.textContent = handle ? `@${handle}` : 'Instagramを見る';
         element.replaceChildren(link);
       });
+      // 行き方の下のリンクと、スマホの近道にも出す
+      $$('[data-instagram-link]').forEach((link) => { link.href = url.href; link.hidden = false; });
     }
   } catch { /* 不正なURLのときは「準備中」のまま */ }
 }
