@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#30241e">
+  <title>メニュー | ブレンド案 | cafe&amp;BAR Caprice</title>
+  <meta name="description" content="cafe&amp;BAR Capriceのメニュー。ひるは、ごはんを。ごごは、くつろぎを。よるは、お酒を。内容は準備中のデモページです。">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%2330241e'/%3E%3Ctext x='20' y='29' text-anchor='middle' fill='%23f8f4eb' font-family='sans-serif' font-weight='700' font-size='26'%3EC%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&family=Noto+Serif+JP:wght@600&display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="caprice-theme.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="site-settings.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <header class="site-header" data-theme="dusk">
+    <a class="wordmark" href="index.html" aria-label="cafe&amp;BAR Caprice トップ">Caprice<small>cafe &amp; BAR</small></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="ナビゲーションを開く"><span></span><span></span></button>
+    <nav id="site-nav" class="site-nav" aria-label="メインナビゲーション">
+      <a href="index.html#day">Capriceの一日</a>
+      <a href="menu.html" aria-current="page">メニュー</a>
+      <a href="index.html#about">お店のこと</a>
+      <a class="nav-visit" href="index.html#visit">行き方</a>
+    </nav>
+  </header>
+
+  <!-- メニューもトップと同じ組み方：写真と言葉を左右に振り分け、時間帯ごとに入れ替える -->
+  <main id="main" class="menu-page">
+    <header class="menu-intro grid">
+      <h1>メニュー</h1>
+      <div class="menu-intro-side">
+        <p>ひるは、ごはんを。ごごは、くつろぎを。よるは、お酒を。</p>
+        <nav class="menu-jump" aria-label="時間帯へ移動"><a href="#noon">ひる</a><a href="#afternoon">ごご</a><a href="#night">よる</a></nav>
+      </div>
+      <p class="notice">メニューは準備中です。写真はイメージで、提供内容・価格・アレルギーに関する情報は決まり次第ご案内します。</p>
+    </header>
+
+    <section class="ch grid" id="noon" aria-labelledby="menu-noon">
+      <div class="ch-photo">
+        <button type="button" class="zoom" data-zoom data-caption="日替わりごはん（イメージ）" data-note="主菜と野菜の副菜、ごはん、汁物。適度にお腹を満たせて、栄養のバランスにも、お財布にも気を配る。日々の食事として選びやすいごはんを目指しています。">
+          <img src="../assets/lunch.jpg" alt="主菜と野菜の副菜、ごはん、汁物を並べたランチのイメージ" width="1536" height="1024" style="object-position: 50% 58%">
+        </button>
+      </div>
+      <div class="ch-copy">
+        <h2 id="menu-noon" class="catch">ひるは、<br>ごはんを。</h2>
+        <p class="lede">ちゃんと食べて、ほっとする。</p>
+        <ul class="items">
+          <li><div><h3>日替わりごはん</h3><p>主菜と野菜の副菜、ごはん、汁物。</p></div><span>価格は準備中</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ch ch-flip grid" id="afternoon" aria-labelledby="menu-afternoon">
+      <div class="ch-photo">
+        <button type="button" class="zoom" data-zoom data-caption="チーズケーキ（イメージ）" data-note="気楽に過ごす午後の時間をイメージした写真です。スイーツの種類や提供内容は、決まり次第ご案内します。">
+          <img src="../assets/cheesecake.jpg" alt="焼き色のついたチーズケーキのイメージ" width="1536" height="1024" loading="lazy" style="object-position: 40% 55%">
+        </button>
+        <button type="button" class="zoom" data-zoom data-caption="コーヒー（イメージ）" data-note="日々のひと休みに寄り添う一杯をイメージしました。豆や淹れ方、提供内容は準備中です。">
+          <img src="../assets/coffee.jpg" alt="陶器のカップに注がれたコーヒーのイメージ" width="1536" height="1024" loading="lazy" style="object-position: 50% 62%">
+        </button>
+      </div>
+      <div class="ch-copy">
+        <h2 id="menu-afternoon" class="catch">ごごは、<br>くつろぎを。</h2>
+        <p class="lede">ひと息の、いつもの一杯。</p>
+        <ul class="items">
+          <li><div><h3>コーヒー</h3><p>ひと息の、いつもの一杯。</p></div><span>価格は準備中</span></li>
+          <li><div><h3>チーズケーキ</h3><p>気分をゆるめる、小さな甘いひと休み。</p></div><span>価格は準備中</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ch grid" id="night" aria-labelledby="menu-night">
+      <div class="ch-photo ch-night">
+        <p aria-hidden="true">一日の終わりに、<br>少しだけ寄り道。</p>
+      </div>
+      <div class="ch-copy">
+        <h2 id="menu-night" class="catch">よるは、<br>お酒を。</h2>
+        <p class="lede">よるは、BARになります。</p>
+        <p>お酒とおつまみのメニューは準備中です。決まり次第、こちらに掲載します。</p>
+      </div>
+    </section>
+
+    <p class="menu-back"><a class="button" href="index.html#visit">行き方を見る</a></p>
+  </main>
+
+  <footer class="site-footer" data-theme="dusk">
+    <a class="wordmark" href="index.html">Caprice<small>cafe &amp; BAR</small></a>
+    <p>自主制作のデモサイトです。写真はAIで制作したイメージで、実際の店舗・スタッフ・提供メニューではありません。</p>
+    <nav aria-label="デザイン案の比較"><a href="../menu.html">公開版メニュー</a><a href="../concept/menu.html">コンセプト案メニュー</a><a href="../refined/menu.html">ブラッシュアップ案メニュー</a></nav>
+  </footer>
+
+  <dialog id="zoom-dialog" aria-labelledby="zoom-caption">
+    <button type="button" class="dialog-close" aria-label="閉じる" autofocus>×</button>
+    <img id="zoom-image" alt="" width="1536" height="1024">
+    <div class="dialog-body"><h2 id="zoom-caption"></h2><p id="zoom-note"></p></div>
+  </dialog>
+</body>
+</html>

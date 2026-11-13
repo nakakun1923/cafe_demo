@@ -1,0 +1,76 @@
+/* Tsukihi — generated from tokens.json */
+@font-face { font-family: "Inter"; src: url("fonts/inter-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+:root, [data-theme="light"] {
+  --bg: #ffffff;
+  --wash: #f7f6f2;
+  --sunk: #efede7;
+  --line: #ebe9e3;
+  --veil: rgba(255, 255, 255, .82);
+  --ink: #1b1a18;
+  --sub: #746f67;
+  --faint: #a8a39a;
+  --on-ink: #ffffff;
+  --leaf: #2f6a4c;
+  --leaf-wash: #e9f3ed;
+  --warm: #c8733a;
+  --warm-wash: #fbf0e8;
+  --warm-ink: #a05c2e;
+  --scrim: rgba(27, 26, 24, .32);
+  --shadow-control: 0 1px 2px rgba(27, 26, 24, .1);
+  --shadow-lift: 0 0 0 1px #ebe9e3, 0 22px 44px rgba(60, 40, 20, .1);
+  --shadow-sheet: 0 40px 100px rgba(27, 26, 24, .28);
+  --shadow-art: 0 12px 14px rgba(60, 40, 20, .13);
+}
+[data-theme="dusk"] {
+  --bg: #1f1814;
+  --wash: #2a211b;
+  --sunk: #342920;
+  --line: #43362c;
+  --veil: rgba(31, 24, 20, .82);
+  --ink: #f6f1e8;
+  --sub: #b9ad9f;
+  --faint: #85786c;
+  --on-ink: #1f1814;
+  --leaf: #8fcfa9;
+  --leaf-wash: #24382c;
+  --warm: #e0a15e;
+  --warm-wash: #3a2a1c;
+  --warm-ink: #ecb57a;
+  --scrim: rgba(0, 0, 0, .5);
+  --shadow-control: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-lift: 0 0 0 1px #43362c, 0 22px 44px rgba(0, 0, 0, .35);
+  --shadow-sheet: 0 40px 100px rgba(0, 0, 0, .6);
+  --shadow-art: 0 12px 14px rgba(0, 0, 0, .35);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 18px;
+  --space-6: 26px;
+  --space-7: 34px;
+  --space-8: 64px;
+  --radius-xs: 14px;
+  --radius-sm: 16px;
+  --radius-md: 18px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 99px;
+  --font-sans: "Inter", "Noto Sans JP", "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-serif: "Noto Serif JP", "Noto Serif CJK JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+}
+.display { font-family: var(--font-serif); font-size: 68px; line-height: 1.3; font-weight: 600; letter-spacing: 0.03em; }
+.heading { font-family: var(--font-serif); font-size: 32px; line-height: 1.3; font-weight: 600; letter-spacing: 0.04em; }
+.title { font-family: var(--font-serif); font-size: 24px; line-height: 1.4; font-weight: 600; letter-spacing: 0.04em; }
+.subtitle { font-family: var(--font-serif); font-size: 20px; line-height: 1.4; font-weight: 600; letter-spacing: 0.06em; }
+.lead { font-family: var(--font-sans); font-size: 17px; line-height: 2; font-weight: 500; }
+.body { font-family: var(--font-sans); font-size: 15px; line-height: 1.75; font-weight: 500; }
+.item { font-family: var(--font-sans); font-size: 16px; line-height: 1.4; font-weight: 700; }
+.small { font-family: var(--font-sans); font-size: 14px; line-height: 1.75; font-weight: 500; }
+.caption { font-family: var(--font-sans); font-size: 13px; line-height: 1.6; font-weight: 500; }
+.label { font-family: var(--font-sans); font-size: 12.5px; line-height: 1.4; font-weight: 700; letter-spacing: 0.06em; }
+.eyebrow { font-family: var(--font-sans); font-size: 13px; line-height: 1.75; font-weight: 600; letter-spacing: 0.14em; }
+.number-xl { font-family: var(--font-sans); font-size: 92px; line-height: 1.05; font-weight: 650; letter-spacing: -0.04em; }
+.number-lg { font-family: var(--font-sans); font-size: 28px; line-height: 1.2; font-weight: 650; letter-spacing: -0.02em; }
+.number { font-family: var(--font-sans); font-size: 16px; line-height: 1.4; font-weight: 650; }

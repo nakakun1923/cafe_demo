@@ -1,0 +1,31 @@
+/* Caprice theme — Tsukihi の形・余白・動きはそのままに、色と影だけを Caprice の紙色・焦げ茶・金に差し替える。 */
+:root, [data-theme="light"] {
+  --bg: #f8f4eb;        /* 紙色（最初のデザインの --paper） */
+  --wash: #f0eadf;      /* カードと帯の面 */
+  --sunk: #e8e0d2;
+  --line: #e2d9ca;
+  --veil: rgba(248, 244, 235, .86);
+  --ink: #30241e;       /* 焦げ茶（最初のデザインの --ink） */
+  --sub: #6b5d51;
+  --faint: #a8998a;
+  --on-ink: #f8f4eb;
+  --warm: #b57735;      /* 金（最初のデザインの --gold）。印と下線に */
+  --warm-wash: #f3e6d3;
+  --warm-ink: #8a5621;  /* 金の文字用 */
+  --scrim: rgba(36, 26, 18, .5);
+  --shadow-control: 0 1px 2px rgba(48, 36, 30, .14);
+  --shadow-lift: 0 0 0 1px #e2d9ca, 0 22px 44px rgba(48, 36, 30, .13);
+  --shadow-sheet: 0 40px 100px rgba(36, 26, 18, .34);
+  --shadow-art: 0 14px 18px rgba(48, 36, 30, .2);
+  --raised: #fffdf8;    /* 持ち上がった面。紙より一段明るい */
+  --afternoon: #f3e6cc; /* ごごの地 */
+  --night: #241a12;     /* よるの地 */
+}
+[data-theme="dusk"] {
+  --bg: #30241e; --wash: #3c2e26; --sunk: #47382e; --line: #57473b; --veil: rgba(48, 36, 30, .9);
+  --ink: #f8f4eb; --sub: #d0c2b1; --faint: #a39382; --on-ink: #30241e;
+  --leaf: #9ad3b0; --leaf-wash: #33402f; --warm: #d99c58; --warm-wash: #4a3524; --warm-ink: #e6b47a;
+  --scrim: rgba(0, 0, 0, .55);
+  --shadow-control: 0 1px 2px rgba(0, 0, 0, .35); --shadow-lift: 0 0 0 1px #57473b, 0 22px 44px rgba(0, 0, 0, .3); --shadow-sheet: 0 40px 100px rgba(0, 0, 0, .55); --shadow-art: 0 14px 18px rgba(0, 0, 0, .4);
+  --raised: #47382e;
+}
