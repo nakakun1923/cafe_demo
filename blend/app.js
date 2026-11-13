@@ -1,4 +1,4 @@
-// Caprice ブレンド案（ブラッシュアップ案の構成 × 最初の配色 × Tsukihi の形）。JavaScriptが無効でも、本文と写真はすべて読めます。
+// Caprice ブレンド案（ブラッシュアップ案の構成 × 最初の配色 × Tsukihi の形 × 「窓辺」のレイアウト）。JavaScriptが無効でも、本文と写真はすべて読めます。
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -47,33 +47,23 @@ if (dialog) {
 }
 
 /* ---- Capriceの一日：スクロールに合わせて日が暮れていく ----
-   「動きを減らす」設定の端末では何もしません（章ごとの背景色のまま表示）。 */
+   「動きを減らす」設定の端末では何もしません（紙色の地のまま表示）。 */
 const day = $('.day');
-const chapters = $$('.chapter', day || document);
+const chapters = $$('.ch', day || document);
 const calm = matchMedia('(prefers-reduced-motion: reduce)');
 if (day && chapters.length === 3 && !calm.matches) {
   const tones = [[248, 244, 235], [243, 230, 204], [36, 26, 18]]; // ひる・ごご・よる の地色（紙色 → 生成り → 焦げ茶）
   const dusk = [201, 138, 92]; // ごご→よる の途中で通る夕焼け色（灰色に濁らせないため）
-  const names = ['ひる', 'ごご', 'よる'];
   const mix = (from, to, t) => from.map((value, i) => Math.round(value + (to[i] - value) * t));
   const ease = (t) => t * t * (3 - 2 * t);
-
-  const clock = document.createElement('p');
-  clock.className = 'day-clock';
-  clock.setAttribute('aria-hidden', 'true');
-  clock.textContent = names[0];
-  chapters[0].before(clock);
   day.classList.add('is-tinted');
-  chapters[2].removeAttribute('data-theme'); // 色は .day 全体で切り替えるので、章ごとの指定は外す
 
-  let current = 0;
   let queued = false;
   function update() {
     queued = false;
     const viewport = innerHeight;
     const band = viewport * 0.6; // この高さをかけて、次の章の色へ移る
     let tone = tones[0];
-    let active = 0;
     let nightness = 0;
     for (let i = 1; i < chapters.length; i += 1) {
       const top = chapters[i].getBoundingClientRect().top;
@@ -84,22 +74,38 @@ if (day && chapters.length === 3 && !calm.matches) {
       } else {
         tone = mix(tone, tones[i], t);
       }
-      if (t > 0.5) active = i;
     }
     day.style.setProperty('--day-bg', `rgb(${tone.join(' ')})`);
     const night = nightness > 0.7; // 地が十分暗くなってから、色のテーマを夜（dusk）に
     day.classList.toggle('is-night', night);
     if (night) day.dataset.theme = 'dusk'; else delete day.dataset.theme;
-    if (active !== current) {
-      current = active;
-      clock.classList.add('is-changing');
-      setTimeout(() => { clock.textContent = names[current]; clock.classList.remove('is-changing'); }, 300);
-    }
   }
   const request = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', request, { passive: true });
   addEventListener('resize', request);
   update();
+}
+
+/* ---- ギャラリー：写真を左へ流し続ける ----
+   同じ並びを複製してつなぎ目をなくす（複製は読み上げない）。止めるボタンで止められる。
+   「動きを減らす」設定では流さず、手で横にスクロールする並びのまま。 */
+const gallery = $('.gallery');
+if (gallery && !calm.matches) {
+  const track = $('.gallery-track', gallery);
+  $$('li', track).forEach((item) => {
+    const copy = item.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    $('img', copy).alt = '';
+    track.append(copy);
+  });
+  gallery.classList.add('is-moving');
+  const toggle = $('.gallery-toggle', gallery);
+  toggle.hidden = false;
+  toggle.addEventListener('click', () => {
+    const paused = gallery.classList.toggle('is-paused');
+    toggle.setAttribute('aria-pressed', String(paused));
+    toggle.textContent = paused ? '動かす' : '止める';
+  });
 }
 
 /* ---- site-settings.js の内容を反映 ---- */
@@ -109,6 +115,9 @@ const fill = (key, value) => {
   $$(`[data-setting="${key}"]`).forEach((element) => { element.textContent = value; });
 };
 ['address', 'hours', 'closed', 'parking'].forEach((key) => fill(key, settings[key]));
+// 決まった項目だけ行を出す（定休日・駐車場・電話は、空欄なら並べない）
+const reveal = (key) => $$(`[data-setting="${key}"]`).forEach((element) => { const row = element.closest('[data-optional]'); if (row) row.hidden = false; });
+['closed', 'parking', 'phone'].forEach((key) => { if (settings[key]) reveal(key); });
 
 if (settings.phone) {
   $$('[data-setting="phone"]').forEach((element) => {

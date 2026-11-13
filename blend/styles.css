@@ -1,6 +1,7 @@
 /* ==========================================================================
    Caprice ブレンド案
    構成と言葉はブラッシュアップ案、色は最初のデザイン、形と動きは Tsukihi。
+   レイアウトは「窓辺」：写真は端まで大きく、言葉は反対側に細く寄せ、章ごとに左右を入れ替える。
    色・影・角丸・余白は tokens.css と caprice-theme.css の変数だけを使う。
    1. 基本  2. 共通部品  3. ヘッダー  4. トップ各セクション
    5. メニューページ  6. フッター  7. 拡大シート  8. 動きの配慮
@@ -9,11 +10,14 @@
 /* 1. 基本 ----------------------------------------------------------------- */
 :root {
   --ease: cubic-bezier(.2, .8, .2, 1);
-  --gutter: clamp(20px, 5vw, 72px);
   --section: clamp(56px, 8vw, 112px);
   --header: 64px;
-  --title-s: clamp(1.5rem, 1.1rem + 1.6vw, 2.125rem);
-  --title-m: clamp(1.625rem, 1.2rem + 2vw, 2.5rem);
+  --m: clamp(20px, 5vw, 64px);        /* 左右の余白 */
+  --g: clamp(12px, 1.9vw, 24px);      /* 12列の溝 */
+  --title-m: clamp(1.75rem, 1.2rem + 1.8vw, 2.5rem);
+  --catch: clamp(1.875rem, 1.1rem + 2.6vw, 3rem);
+  --gap-l: clamp(88px, 12.5vw, 160px); /* 大きな区切り */
+  --gap-m: clamp(72px, 9.4vw, 120px);  /* 章と章の間 */
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header) + 16px); }
@@ -51,7 +55,7 @@ img[src$='coffee.jpg'] { object-position: 52% 62%; }
 img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
 
 /* 3. ヘッダー ------------------------------------------------------------- */
-.site-header { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 24px; height: var(--header); padding: 0 var(--gutter); background: var(--bg); }
+.site-header { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 24px; height: var(--header); padding: 0 var(--m); background: var(--bg); }
 .wordmark { display: inline-flex; align-items: baseline; gap: 10px; font: 600 1.5rem/1 var(--font-serif); letter-spacing: .03em; text-decoration: none; }
 .wordmark small { color: var(--sub); font: 600 .6875rem/1 var(--font-sans); letter-spacing: .16em; }
 .site-nav { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 32px); font-size: .9375rem; }
@@ -71,111 +75,109 @@ img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
 }
 
 /* 4. トップ各セクション --------------------------------------------------- */
-/* 4-1. ヒーロー：左に言葉、右に写真。写真は左下だけ大きく丸める */
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; min-height: min(720px, calc(100svh - var(--header))); }
-.hero-copy { padding: 56px clamp(24px, 4vw, 64px) 56px var(--gutter); }
-.hero-place { color: var(--warm-ink); font-size: .875rem; font-weight: 700; letter-spacing: .16em; }
-.hero h1 { margin: 12px 0 24px; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.4; letter-spacing: .03em; white-space: nowrap; }
-.hero-lead { color: var(--sub); font-size: 1.0625rem; line-height: 2.1; }
-.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 32px; margin-top: 36px; }
-.hero-visual { position: relative; align-self: stretch; min-height: 420px; }
-.hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 40% center; border-bottom-left-radius: clamp(60px, 10vw, 160px); }
-.hero-plate { position: absolute; left: clamp(-90px, -6vw, -40px); bottom: clamp(24px, 5vw, 64px); width: clamp(140px, 17vw, 240px); aspect-ratio: 1; object-fit: cover; border: 8px solid var(--bg); border-radius: 50%; box-shadow: var(--shadow-art); }
-@media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; min-height: 0; }
-  .hero-copy { padding: 36px var(--gutter) 40px; }
-  .hero h1 { font-size: clamp(2.125rem, 10.5vw, 4rem); }
-  .hero-actions .button { flex: 1 1 auto; }
-  .hero-visual { min-height: 0; aspect-ratio: 4 / 3; margin-left: var(--gutter); margin-bottom: 44px; }
-  .hero-photo { border-bottom-left-radius: 72px; }
-  .hero-plate { left: -12px; bottom: -36px; width: 124px; border-width: 6px; }
-}
+/* 12列のグリッド。すべてのセクションがこの線に揃う */
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); padding-inline: var(--m); }
+@media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } .grid > * { grid-column: 1 / -1 !important; } }
 
-/* 4-2. きょうの案内：来店前に知りたいことを、ひとつの面にまとめる */
-.today { padding: var(--space-6) var(--gutter) 0; }
-.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; padding: var(--space-5) var(--space-6); border-radius: var(--radius-lg); background: var(--wash); }
-.facts > div { padding: 6px var(--space-6); border-left: 1px solid var(--line); } .facts > div:first-child { padding-left: 0; border-left: 0; }
-.facts dt { color: var(--sub); font-size: .8125rem; font-weight: 700; letter-spacing: .06em; }
-.facts dd { font-size: 1.0625rem; font-weight: 700; line-height: 1.6; }
-.facts .link { margin-left: 6px; font-size: .9375rem; white-space: nowrap; }
-@media (max-width: 760px) {
-  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) 0; padding: var(--space-5); }
-  .facts > div { padding: 0 var(--space-4); } .facts > div:nth-child(odd) { padding-left: 0; border-left: 0; }
-}
+/* 4-1. ヒーロー：写真は端まで。言葉は縦書きの「札」にして、写真の右端に差し込む（縦書きはここだけ） */
+.hero { --hero-h: clamp(460px, 52vw, 680px); position: relative; height: var(--hero-h); }
+.hero-photo { width: 100%; height: 100%; object-fit: cover; object-position: 38% 42%; }
+.hero-tab { position: absolute; top: 0; right: var(--m); bottom: clamp(-48px, -3.8vw, -32px); display: flex; flex-direction: row-reverse; gap: clamp(10px, 1.4vw, 18px); padding: clamp(26px, 3.4vw, 44px) clamp(16px, 2.3vw, 30px) clamp(22px, 3vw, 40px); background: var(--bg); writing-mode: vertical-rl; }
+.hero-tab h1 { font-size: min(clamp(2.125rem, 1.2rem + 3.6vw, 3.75rem), calc((var(--hero-h) - 100px) / 8)); line-height: 1.5; letter-spacing: .06em; white-space: nowrap; }
+.hero-tab p { white-space: nowrap; color: var(--warm-ink); font-size: clamp(.6875rem, .6rem + .3vw, .8125rem); font-weight: 700; letter-spacing: .32em; }
+@media (max-width: 760px) { .hero-photo { object-position: 22% 42%; } }
 
-/* 4-3. お店のこと */
-.about { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: center; gap: clamp(32px, 6vw, 96px); padding: var(--section) var(--gutter); }
-.about-photo img { aspect-ratio: 4 / 3; }
-.about-copy h2 { margin-bottom: 24px; font-size: var(--title-m); }
-.about-copy p { max-width: 34em; color: var(--sub); } .about-copy p + p { margin-top: 1em; }
+.intro { align-items: end; padding-top: clamp(64px, 8vw, 104px); }
+.intro-lead { grid-column: 1 / 8; font: 600 clamp(1.1875rem, .9rem + 1.1vw, 1.75rem)/2 var(--font-serif); letter-spacing: .06em; }
+.intro-actions { grid-column: 9 / 13; display: flex; justify-content: flex-end; align-items: center; gap: 28px; padding-bottom: 8px; }
+@media (max-width: 900px) { .intro { row-gap: 26px; } .intro-actions { justify-content: space-between; } }
+
+/* 4-2. お店のこと：言葉は左に細く、写真は右へ大きく端まで */
+.about { align-items: end; padding-top: var(--gap-l); }
+.about-copy { grid-column: 1 / 5; }
+.about-copy h2 { margin-bottom: 30px; font-size: clamp(1.75rem, 1rem + 1.8vw, 2.25rem); line-height: 1.6; letter-spacing: .06em; white-space: nowrap; }
+.about-copy p { max-width: 34em; color: var(--sub); line-height: 2.2; }
+@media (min-width: 901px) and (max-width: 1180px) { .about-copy { grid-column: 1 / 6; } .about-photo { grid-column: 7 / 13; } } .about-copy p + p { margin-top: 1.2em; }
+.about-photo { grid-column: 6 / 13; margin-right: calc(var(--m) * -1); }
+.about-photo .zoom { height: clamp(340px, 50vw, 680px); border-radius: 0; }
+.about-photo img { height: 100%; }
 .more { margin-top: 24px; }
-.more summary { display: inline-block; color: var(--ink); font-weight: 700; list-style: none; cursor: pointer; text-decoration: underline; text-decoration-color: var(--warm); text-decoration-thickness: 2px; text-underline-offset: 7px; }
+.more summary { display: inline-block; font-weight: 700; list-style: none; cursor: pointer; text-decoration: underline; text-decoration-color: var(--warm); text-decoration-thickness: 2px; text-underline-offset: 7px; }
 .more summary::-webkit-details-marker { display: none; }
-.more summary::after { content: '＋'; margin-left: 10px; color: var(--warm-ink); } .more[open] summary::after { content: '－'; }
+.more summary::after { content: '＋'; display: inline-block; margin-left: 10px; color: var(--warm-ink); } .more[open] summary::after { content: '－'; }
 .more[open] { padding: var(--space-5) var(--space-6); border-radius: var(--radius-lg); background: var(--wash); }
 .more p:first-of-type { margin-top: 16px; }
-@media (max-width: 860px) { .about { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .about { row-gap: 32px; } .about-photo { margin-left: calc(var(--m) * -1); } }
 
-/* 4-4. Capriceの一日：ひる → ごご → よる。読み進めると地の色も日が暮れていく */
-.day-intro { padding: 0 var(--gutter) clamp(36px, 5vw, 64px); }
-.day-intro h2 { margin-bottom: 10px; font-size: var(--title-m); } .day-intro p { color: var(--sub); }
-.chapter { display: grid; grid-template-columns: auto minmax(0, 6fr) minmax(0, 4fr); align-items: center; gap: clamp(24px, 4vw, 64px); padding: clamp(56px, 8vw, 104px) var(--gutter); }
-.chapter-time { align-self: start; writing-mode: vertical-rl; color: var(--sunk); font: 600 clamp(4rem, 9vw, 7.5rem)/1 var(--font-serif); letter-spacing: .1em; }
-.chapter-photo img { aspect-ratio: 3 / 2; }
-.chapter-copy h3 { margin-bottom: 18px; font-size: var(--title-s); }
-.chapter-copy p { max-width: 30em; margin-bottom: 22px; color: var(--sub); }
-.chapter-noon { padding-top: 0; }
-.chapter-afternoon { grid-template-columns: auto minmax(0, 4fr) minmax(0, 6fr); background: var(--afternoon); }
-.chapter-afternoon .chapter-time { color: #e6d3ad; }
-.chapter-plates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 40px); }
-.chapter-plates figure:last-child { margin-top: clamp(32px, 6vw, 88px); }
-.chapter-plates figcaption { margin-top: 14px; text-align: center; font-weight: 700; }
-.chapter-night { background: var(--night); }
-.chapter-night .chapter-time { color: #3a2b20; }
-.chapter-night .chapter-photo img { filter: brightness(.66) saturate(.92); }
-@media (max-width: 860px) {
-  .chapter, .chapter-afternoon { grid-template-columns: 1fr; gap: 24px; }
-  .chapter-time { writing-mode: horizontal-tb; margin-bottom: -8px; font-size: 3.75rem; }
-  .chapter-afternoon .chapter-copy { order: 3; }
+/* 4-3. Capriceの一日 */
+.day { padding-bottom: var(--gap-m); }
+.day-intro { align-items: end; padding-top: var(--gap-l); }
+.day-intro h2 { grid-column: 1 / 8; font-size: clamp(2.375rem, 1.3rem + 3.4vw, 4rem); line-height: 1.3; }
+.day-intro p { grid-column: 9 / 13; padding-bottom: 12px; color: var(--sub); }
+@media (max-width: 900px) { .day-intro { row-gap: 10px; } }
+
+/* 章：写真7列・言葉4列。写真は端まで、言葉は下揃え。.ch-flip で左右を入れ替える
+   見出しはキャッチフレーズ（ひるは、ごはんを。）、その下に添え書きと本文 */
+.ch { align-items: end; padding-top: var(--gap-m); }
+.day-intro + .ch { padding-top: clamp(40px, 5vw, 64px); }
+.ch-photo { grid-row: 1; grid-column: 1 / 8; display: flex; gap: 3px; height: clamp(300px, 44vw, 600px); margin-left: calc(var(--m) * -1); }
+.ch-photo .zoom { flex: 1; min-width: 0; height: 100%; border-radius: 0; }
+.ch-photo img { height: 100%; }
+.ch-copy { grid-row: 1; grid-column: 9 / 13; }
+.ch-flip .ch-photo { grid-column: 6 / 13; margin-left: 0; margin-right: calc(var(--m) * -1); }
+.ch-flip .ch-copy { grid-column: 1 / 5; }
+.catch { margin-bottom: 22px; font-size: var(--catch); line-height: 1.5; letter-spacing: .06em; }
+.ch-copy .lede { margin-bottom: 12px; color: var(--ink); font: 600 clamp(1.0625rem, .95rem + .4vw, 1.1875rem)/1.9 var(--font-serif); letter-spacing: .06em; }
+.ch-copy p { max-width: 34em; margin-bottom: 30px; color: var(--sub); }
+/* よる：写真の代わりに、焦げ茶の面に言葉を置く（夜の写真が撮れたら差し替える） */
+.ch-night { align-items: center; padding-left: var(--m); background: var(--night); color: #f8f4eb; transition: background .4s; }
+.ch-night p { font: 600 clamp(1.6875rem, 1rem + 2.3vw, 2.75rem)/1.5 var(--font-serif); letter-spacing: .08em; }
+@media (max-width: 900px) {
+  .ch-photo, .ch-flip .ch-photo { margin-inline: calc(var(--m) * -1); }
+  .ch-copy { grid-row: 2; padding-top: 30px; }
+  .catch { margin-bottom: 14px; } .ch-copy .lede { margin-bottom: 8px; } .ch-copy p { margin-bottom: 18px; }
 }
 /* スクロール演出（app.js が .is-tinted を付けたときだけ有効）
-   - 地の色は章ごとに切り替えず、紙色 → 生成り → 夕焼け → 焦げ茶へ移り変わる
-   - 夜になったら app.js が data-theme="dusk" を付け、文字や下線の色がまとめて夜用に替わる
-   - PCでは縦書きの時間帯ラベルが画面に残り、いまどの章かを示す */
+   地の色が 紙色 → 生成り → 夕焼け → 焦げ茶 へ移り変わる。夜になると data-theme="dusk" で文字色もまとめて夜用に */
 .day.is-tinted { background-color: var(--day-bg, var(--bg)); transition: color .4s; }
-.day.is-tinted .chapter { background: transparent; }
-.day.is-tinted .chapter-time { color: currentColor; opacity: .1; }
-.day.is-tinted.is-night .chapter-photo img { filter: brightness(.66) saturate(.92); }
-.day-clock { display: none; }
-@media (min-width: 861px) {
-  .day.is-tinted .chapter-time { visibility: hidden; }
-  .day.is-tinted .day-clock { --clock-size: clamp(4rem, 9vw, 7.5rem); display: block; position: sticky; z-index: 1; top: calc(var(--header) + 14vh); height: calc(var(--clock-size) * 2.2); margin-bottom: calc(var(--clock-size) * -2.2); padding-left: var(--gutter); pointer-events: none; writing-mode: vertical-rl; font: 600 var(--clock-size)/1 var(--font-serif); letter-spacing: .1em; opacity: .1; transition: opacity .3s; }
-  .day.is-tinted .day-clock.is-changing { opacity: 0; }
-}
+.day.is-night .ch-night { background: var(--wash); }
 
-/* 4-5. Instagram：夜の章のあとに、ひとつの面で。写真は雰囲気を伝える飾り */
-.insta { padding: var(--section) var(--gutter) 0; }
-.insta-panel { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; gap: clamp(28px, 5vw, 72px); padding: clamp(28px, 4.5vw, 56px); border-radius: var(--radius-xl); background: var(--wash); }
-.insta-label { color: var(--warm-ink); font-size: .8125rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
-.insta h2 { margin: 8px 0 14px; font-size: var(--title-m); }
-.insta-copy > p:not(.insta-label) { color: var(--sub); }
-.insta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 26px; }
+/* 4-4. ギャラリー：写真が左へゆっくり流れ続ける。マウスを乗せる・フォーカスする・ボタンで止まる */
+.gallery { position: relative; margin-top: var(--gap-l); }
+.gallery-window { overflow: hidden; }
+.gallery-track { display: flex; gap: clamp(10px, 1.25vw, 16px); width: max-content; }
+.gallery-track li { flex: none; width: clamp(300px, 44vw, 560px); height: clamp(220px, 31vw, 400px); }
+.gallery-track li.tall { width: clamp(170px, 23.5vw, 300px); }
+.gallery-track img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-lg); }
+.gallery.is-moving .gallery-track { animation: gallery-slide 70s linear infinite; }
+.gallery.is-moving .gallery-window:hover .gallery-track, .gallery.is-moving .gallery-window:focus-visible .gallery-track, .gallery.is-paused .gallery-track { animation-play-state: paused; }
+@keyframes gallery-slide { to { transform: translateX(calc(-50% - clamp(10px, 1.25vw, 16px) / 2)); } }
+.gallery-window:focus-visible { outline-offset: -4px; }
+.gallery:not(.is-moving) .gallery-window { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-inline: var(--m); }
+.gallery:not(.is-moving) .gallery-track li { scroll-snap-align: start; }
+.gallery-toggle { position: absolute; right: var(--m); bottom: 14px; padding: 8px 18px; border-radius: var(--radius-pill); background: var(--veil); color: var(--ink); font-size: .875rem; font-weight: 700; box-shadow: var(--shadow-control); }
+
+/* 4-5. Instagram：ギャラリーの続きに、細い帯で */
+.insta { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 40px; margin: clamp(32px, 4.4vw, 56px) var(--m) 0; padding: clamp(28px, 3.4vw, 44px) clamp(22px, 4.4vw, 56px); border-radius: var(--radius-xl); background: var(--wash); }
+.insta h2 { margin-bottom: 6px; font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.125rem); line-height: 1.5; }
+.insta-copy p { color: var(--sub); }
+.insta-actions { display: flex; align-items: center; gap: 14px 22px; }
 .insta-handle, .insta-pending { color: var(--sub); font-weight: 700; }
-.insta-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
-.insta-photos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-lg); }
-.insta-photos img:nth-child(2) { margin-top: clamp(16px, 3vw, 40px); }
-@media (max-width: 860px) { .insta-panel { grid-template-columns: 1fr; } .insta-actions .button { width: 100%; } }
+@media (max-width: 900px) { .insta { grid-template-columns: 1fr; } .insta-actions { flex-direction: row-reverse; justify-content: flex-end; } }
+@media (max-width: 760px) { .insta-actions { flex-direction: column-reverse; align-items: stretch; } .insta-actions .button { width: 100%; } }
 
 /* 4-6. 行き方：地図と来店情報は、明るい地で読みやすく */
-.visit { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; gap: clamp(32px, 5vw, 80px); padding: var(--section) var(--gutter); }
-.visit h2 { margin-bottom: 20px; font-size: var(--title-m); }
-.visit-facts > div { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); }
-.visit-facts dt { color: var(--sub); font-size: .875rem; font-weight: 700; line-height: 2.05; } .visit-facts dd { font-weight: 700; }
-.visit-facts a { text-decoration-color: var(--warm); text-decoration-thickness: 2px; text-underline-offset: 5px; }
-.visit .button { margin-top: 28px; }
-.visit-map { border-radius: var(--radius-lg); overflow: hidden; background: var(--wash); }
+.visit { align-items: start; padding-block: var(--gap-m); }
+.visit-copy { grid-column: 1 / 6; } .visit-map { grid-column: 7 / 13; }
+.visit h2 { margin-bottom: 22px; font-size: var(--title-m); }
+.facts > div { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: 12px; padding: 13px 0; border-top: 1px solid var(--line); }
+.facts > div[hidden] { display: none; }
+.facts dt { color: var(--sub); font-size: .8125rem; font-weight: 700; line-height: 2.3; } .facts dd { font-weight: 700; }
+.facts a { text-decoration-color: var(--warm); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.visit .button { margin-top: 30px; }
+.visit-map { overflow: hidden; border-radius: var(--radius-lg); background: var(--wash); }
 .visit-map iframe { display: block; width: 100%; aspect-ratio: 4 / 3; border: 0; }
-@media (max-width: 860px) { .visit { grid-template-columns: 1fr; } .visit .button { width: 100%; } }
+@media (max-width: 900px) { .visit { row-gap: 28px; } .visit .button { width: 100%; } }
 
 /* 4-7. スマホの下に浮かぶ近道（コンセプト案3の固定バーを、丸い形で） */
 .quickbar { display: none; }
@@ -187,28 +189,32 @@ img[src$='cheesecake.jpg'] { object-position: 42% 50%; }
   .site-footer { padding-bottom: 96px; }
 }
 
-/* 5. メニューページ ------------------------------------------------------- */
-.menu-page { max-width: 920px; margin: 0 auto; padding: clamp(36px, 6vw, 80px) var(--gutter) var(--section); }
-.menu-intro h1 { font-size: clamp(2.5rem, 1.4rem + 5vw, 4.5rem); line-height: 1.3; }
-.menu-intro > p { margin-top: 10px; color: var(--sub); font-size: 1.0625rem; }
-.menu-jump { display: inline-flex; gap: 0; margin-top: 26px; padding: var(--space-1); border-radius: var(--radius-pill); background: var(--wash); }
+/* 5. メニューページ（トップの章と同じ組み方） ------------------------------- */
+.menu-intro { align-items: end; row-gap: 26px; padding-top: clamp(48px, 7vw, 96px); }
+.menu-intro h1 { grid-column: 1 / 7; font-size: clamp(2.75rem, 1.4rem + 5vw, 5rem); line-height: 1.2; }
+.menu-intro-side { grid-column: 7 / 13; display: grid; justify-items: end; gap: 18px; padding-bottom: 10px; }
+.menu-intro-side > p { color: var(--sub); }
+.menu-jump { display: inline-flex; padding: var(--space-1); border-radius: var(--radius-pill); background: var(--wash); }
 .menu-jump a { min-width: 84px; padding: 7px 20px; border-radius: var(--radius-pill); color: var(--sub); font-weight: 700; text-align: center; text-decoration: none; transition: background .3s, color .3s; }
 .menu-jump a:hover { background: var(--ink); color: var(--on-ink); }
-.menu-intro .notice { margin-top: 26px; padding: var(--space-4) var(--space-5); border-radius: var(--radius-md); background: var(--warm-wash); color: var(--ink); font-size: .9375rem; }
-.menu-group { margin-top: clamp(44px, 6vw, 72px); }
-.menu-group h2 { padding-bottom: 12px; border-bottom: 1px solid var(--line); font-size: var(--title-m); line-height: 1.3; }
-.menu-list { display: grid; gap: var(--space-3); margin-top: var(--space-5); }
-.menu-list li { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 8px 24px; padding: var(--space-4) var(--space-6) var(--space-4) var(--space-4); border-radius: var(--radius-lg); background: var(--wash); transition: transform .45s var(--ease), box-shadow .45s var(--ease), background .3s; }
-.menu-list li:hover { transform: translateY(-4px); background: var(--raised); box-shadow: var(--shadow-lift); }
-.menu-list h3 { font: 700 1.1875rem/1.5 var(--font-sans); letter-spacing: 0; } .menu-list h3 + p { color: var(--sub); font-size: .9375rem; }
-.menu-list .price { color: var(--sub); font-size: .875rem; font-weight: 700; white-space: nowrap; }
-@media (max-width: 600px) { .menu-list li { grid-template-columns: 84px minmax(0, 1fr); padding-right: var(--space-4); } .menu-list .price { grid-column: 2; } }
-.menu-group-night { padding: clamp(28px, 5vw, 44px); border-radius: var(--radius-xl); background: var(--night); }
-.menu-group-night h2 { border-bottom-color: var(--warm); } .menu-empty { margin-top: 18px; color: var(--sub); }
-.menu-back { margin-top: 44px; text-align: center; }
+.menu-intro .notice { grid-column: 1 / 13; padding: var(--space-4) var(--space-5); border-radius: var(--radius-md); background: var(--warm-wash); font-size: .9375rem; }
+@media (max-width: 900px) { .menu-intro-side { justify-items: start; } }
+.menu-page .ch { scroll-margin-top: calc(var(--header) + 16px); }
+.menu-page .ch:first-of-type { padding-top: clamp(48px, 6vw, 80px); }
+/* 品書き：品名と価格を点線でつなぐ */
+.items li { display: grid; grid-template-columns: auto minmax(24px, 1fr) auto; align-items: baseline; column-gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); }
+.items li:last-child { border-bottom: 1px solid var(--line); }
+.items li > div { display: contents; }
+.items h3 { grid-row: 1; grid-column: 1; }
+.items li::after { content: ''; grid-row: 1; grid-column: 2; border-bottom: 2px dotted var(--line); transform: translateY(-6px); }
+.items li > span { grid-row: 1; grid-column: 3; color: var(--sub); font-size: .8125rem; font-weight: 700; white-space: nowrap; }
+.ch-copy .items li p { grid-row: 2; grid-column: 1 / -1; }
+.items h3 { font: 700 1.0625rem/1.6 var(--font-sans); letter-spacing: 0; }
+.ch-copy .items p { margin: 0; font-size: .875rem; }
+.menu-back { padding: var(--gap-m) var(--m); text-align: center; }
 
 /* 6. フッター ------------------------------------------------------------- */
-.site-footer { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px 40px; padding: 32px var(--gutter); background: var(--night); color: var(--sub); font-size: .875rem; }
+.site-footer { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px 40px; padding: 32px var(--m); background: var(--night); color: var(--sub); font-size: .875rem; }
 .site-footer .wordmark { color: var(--ink); font-size: 1.375rem; }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; } .site-footer nav a { text-underline-offset: 5px; }
 @media (max-width: 860px) { .site-footer { grid-template-columns: 1fr; } }
